@@ -12,11 +12,11 @@ def get_data():
     # path_train = os.path.abspath('./raw_data/train.csv')
     # path_test = os.path.abspath('./raw_data/test.csv')
 
-    # get data from .csv files
+    # get data from .csv files (relative paths)
 
-    submission = pd.read_csv('../raw_data/sample_submission.csv')
-    train = pd.read_csv('../raw_data/train.csv')
-    test = pd.read_csv('../raw_data/test.csv')
+    submission = pd.read_csv('./raw_data/sample_submission.csv')
+    train = pd.read_csv('./raw_data/train.csv')
+    test = pd.read_csv('./raw_data/test.csv')
 
     return submission, train, test
 
