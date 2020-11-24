@@ -1,12 +1,14 @@
 # merging and cleaning of dataset
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
+import os
 
 def get_data():
 
-    path_submission = os.path.dirname(os.path.abspath(WorkforceSentimentMonitoring.__file__)) + '/raw_data/sample_submission.csv'
-    path_train = os.path.dirname(os.path.abspath(WorkforceSentimentMonitoring.__file__)) + '/raw_data/train.csv'
-    path_tes = os.path.dirname(os.path.abspath(WorkforceSentimentMonitoring.__file__)) + '/raw_data/test.csv'
+    path_submission = os.path.abspath('./raw_data/sample_submission.csv')
+    path_train = os.path.abspath('./raw_data/train.csv')
+    path_test = os.path.abspath('./raw_data/test.csv')
 
     submission = pd.read_csv(path_submission)
     train = pd.read_csv(path_train)
