@@ -1,3 +1,3 @@
-graft workforce_sentiment_monitoring
+graft WorkforceSentimentMonitoring
 global-exclude *.py[cod] __pycache__ *.so *.ipynb
-recursive-exclude  workforce_sentiment_monitoring/jupy *
+recursive-exclude  WorkforceSentimentMonitoring/jupy *
