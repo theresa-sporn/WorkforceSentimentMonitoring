@@ -1,0 +1,16 @@
+MANIFEST.in
+README.md
+setup.py
+WorkforceSentimentMonitoring/__init__.py
+WorkforceSentimentMonitoring/data.py
+WorkforceSentimentMonitoring/lib.py
+WorkforceSentimentMonitoring/preprocessing.py
+WorkforceSentimentMonitoring/utils.py
+scripts/workforce_sentiment_monitoring-run
+tests/__init__.py
+tests/lib_test.py
+workforce_sentiment_monitoring.egg-info/PKG-INFO
+workforce_sentiment_monitoring.egg-info/SOURCES.txt
+workforce_sentiment_monitoring.egg-info/dependency_links.txt
+workforce_sentiment_monitoring.egg-info/not-zip-safe
+workforce_sentiment_monitoring.egg-info/top_level.txt
