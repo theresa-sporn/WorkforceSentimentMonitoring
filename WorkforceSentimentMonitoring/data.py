@@ -7,16 +7,12 @@ import os
 def get_data():
 
     # paths to raw_data folder containing .csv files
-
-    # path_submission = os.path.abspath('./raw_data/sample_submission.csv')
-    # path_train = os.path.abspath('./raw_data/train.csv')
-    # path_test = os.path.abspath('./raw_data/test.csv')
-
     # get data from .csv files (relative paths)
 
-    submission = pd.read_csv('./raw_data/sample_submission.csv')
-    train = pd.read_csv('./raw_data/train.csv')
-    test = pd.read_csv('./raw_data/test.csv')
+    path = os.path.join(os.getcwd(), '../raw_data')
+    submission = pd.read_csv(os.path.join(path, 'sample_submission.csv'))
+    train = pd.read_csv(os.path.join(path, 'train.csv'))
+    test = pd.read_csv(os.path.join(path,'test.csv'))
 
     return submission, train, test
 
@@ -59,5 +55,6 @@ def holdout(df, target):
 
 
 if __name__ == '__main__':
+
     df = get_data()
     print(df)
