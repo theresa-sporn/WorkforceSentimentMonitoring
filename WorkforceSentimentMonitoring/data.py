@@ -10,7 +10,6 @@ def get_data():
     # get data from .csv files (relative paths)
 
     path = os.path.join(os.getcwd(), '../raw_data')
-    print(os.path.join(path, 'sample_submission.csv'))
     submission = pd.read_csv(os.path.join(path, 'sample_submission.csv'))
     train = pd.read_csv(os.path.join(path, 'train.csv'))
     test = pd.read_csv(os.path.join(path,'test.csv'))
