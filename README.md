@@ -1,5 +1,5 @@
 # Data analysis
-- Document here the project: workforce_sentiment_monitoring
+- Document here the project: WorkforceSentimentMonitoring
 - Description: Project Description
 - Data Source:
 - Type of analysis:
@@ -22,15 +22,15 @@ Unittest test:
   $ make clean install test
 ```
 
-Check for workforce_sentiment_monitoring in gitlab.com/{group}.
+Check for WorkforceSentimentMonitoring in gitlab.com/{group}.
 If your project is not set please add it:
 
-- Create a new project on `gitlab.com/{group}/workforce_sentiment_monitoring`
+- Create a new project on `gitlab.com/{group}/WorkforceSentimentMonitoring`
 - Then populate it:
 
 ```bash
-  $ ##   e.g. if group is "{group}" and project_name is "workforce_sentiment_monitoring"
-  $ git remote add origin git@gitlab.com:{group}/workforce_sentiment_monitoring.git
+  $ ##   e.g. if group is "{group}" and project_name is "WorkforceSentimentMonitoring"
+  $ git remote add origin git@gitlab.com:{group}/WorkforceSentimentMonitoring.git
   $ git push -u origin master
   $ git push -u origin --tags
 ```
@@ -38,10 +38,10 @@ If your project is not set please add it:
 Functionnal test with a script:
 ```bash
   $ cd /tmp
-  $ workforce_sentiment_monitoring-run
+  $ WorkforceSentimentMonitoring-run
 ```
 # Install
-Go to `gitlab.com/{group}/workforce_sentiment_monitoring` to see the project, manage issues,
+Go to `gitlab.com/{group}/WorkforceSentimentMonitoring` to see the project, manage issues,
 setup you ssh public key, ...
 
 Create a python3 virtualenv and activate it:
@@ -52,19 +52,19 @@ Create a python3 virtualenv and activate it:
 
 Clone the project and install it:
 ```bash
-  $ git clone gitlab.com/{group}/workforce_sentiment_monitoring
-  $ cd workforce_sentiment_monitoring
+  $ git clone gitlab.com/{group}/WorkforceSentimentMonitoring
+  $ cd WorkforceSentimentMonitoring
   $ pip install -r requirements.txt
   $ make clean install test                # install and test
 ```
 Functionnal test with a script:
 ```bash
   $ cd /tmp
-  $ workforce_sentiment_monitoring-run
-``` 
+  $ WorkforceSentimentMonitoring-run
+```
 
 # Continus integration
-## Github 
+## Github
 Every push of `master` branch will execute `.github/workflows/pythonpackages.yml` docker jobs.
 ## Gitlab
 Every push of `master` branch will execute `.gitlab-ci.yml` docker jobs.

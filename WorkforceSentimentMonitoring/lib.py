@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 # Copyright (C) 2018 Jean Bizot <jean@styckr.io>
-""" Main lib for workforce_sentiment_monitoring Project
+""" Main lib for WorkforceSentimentMonitoring Project
 """
 
 from os.path import split
@@ -50,8 +50,8 @@ pd.set_option('display.width', 200)
 
 if __name__ == '__main__':
     # For introspections purpose to quickly get this functions on ipython
-    import workforce_sentiment_monitoring
-    folder_source, _ = split(workforce_sentiment_monitoring.__file__)
+    import WorkforceSentimentMonitoring
+    folder_source, _ = split(WorkforceSentimentMonitoring.__file__)
     df = pd.read_csv('{}/data/data.csv.gz'.format(folder_source))
-    clean_data = clean_data(df)
-    print(' dataframe cleaned')
+    get_data = get_data()
+    print(' dataframe fetched')
