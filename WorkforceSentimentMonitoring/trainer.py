@@ -16,8 +16,8 @@ from WorkforceSentimentMonitoring.preprocessing import preprocessing
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-FEATURE_COLS = ['summary', 'positives', 'negatives', 'advice_to_mgmt']
-SCORE_COLS = ['score_1', 'score_2', 'score_3', 'score_4', 'score_5', 'overall']
+FEATURE_COLS = ['summary', 'positives', 'negatives', 'advice_to_mgmt', 'review']
+SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 def feature_engineer(df):
     # simple transformation from notebook, should be an extra feature package
     # iterate over features and append results to df as new cols
@@ -77,7 +77,7 @@ def get_lengths(df):
     df['postives_length'] = df['positives'].apply(func)
     df['negatives_length'] = df['negatives'].apply(func)
     df['advice_length'] = df['advice_to_mgmt'].apply(func)
-    df['combined_length'] = df['text_combined'].apply(func)
+    df['combined_length'] = df['review'].apply(func)
     return df
 
 def scaler(df):
@@ -110,9 +110,8 @@ def linear_feature(X, df):
 
 
 class Trainer(object):
-    ESTIMATOR = "Logic"
-    # SCORE_COLS = ['score_1', 'score_2', 'score_3', 'score_4', 'score_5', 'overall']
-    # SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
+    ESTIMATOR = "RandomForest"
+    SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
     def __init__(self, X, y, **kwargs):
         self.kwargs = kwargs
@@ -125,16 +124,16 @@ class Trainer(object):
         estimator = self.kwargs.get("estimator", self.ESTIMATOR)
         if estimator == "Logic":
             model = LogisticRegression(max_iter=1000)
-        # elif estimator == "RandomForest":
-        #     model = RandomForestRegressor()
-        #     self.model_params = {   'n_estimators': [int(x) for x in np.linspace(start = 50, stop = 200, num = 10)],
-        #         'max_features': ['auto', 'sqrt']}
+        elif estimator == "RandomForest":
+            model = RandomForestRegressor()
+        #    self.model_params = {'n_estimators': [int(x) for x in np.linspace(start = 50, stop = 200, num = 10)],
+        #        'max_features': ['auto', 'sqrt']}
         #      'max_depth' : [int(x) for x in np.linspace(10, 110, num = 11)]}
         # else:
         #     model = Lasso()
         # estimator_params = self.kwargs.get("estimator_params", {})
         # model.set_params(**estimator_params)
-        # print(model.__class__.__name__)
+        print(model.__class__.__name__)
         return model
 
 
@@ -143,7 +142,7 @@ class Trainer(object):
         pass
 
     def train(self, df):
-        SCORE_COLS = ['score_1', 'score_2', 'score_3', 'score_4', 'score_5', 'overall']
+        SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
         """iterate features, train and predict targets"""
         predictions = pd.DataFrame()
         pred_scores = {}
