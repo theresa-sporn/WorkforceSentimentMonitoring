@@ -13,7 +13,7 @@ def getPolarity(text):
 
 
 def get_subjectivity_polarity_columns(df):
-    text_columns = df.select_dytypes('object').columns
+    text_columns = df.select_dtypes('object').columns
     for feature in text_columns:
         df[f'subjectivity_{feature}'] = df[feature].apply(getSubjectivity)
         df[f'polarity_{feature}'] = df[feature].apply(getPolarity)
