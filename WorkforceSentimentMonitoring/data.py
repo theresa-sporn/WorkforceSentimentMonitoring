@@ -46,8 +46,8 @@ def merge(submission, train, test):
 
 def holdout(df, target):
 
-    y = df[f'{target}']
-    X = df.drop(f'{target}', axis=1)
+    y = df[target]
+    X = df.drop(target, axis=1)
 
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.3)
 
