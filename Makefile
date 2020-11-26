@@ -5,10 +5,10 @@ install_requirements:
 	@pip install -r requirements.txt
 
 check_code:
-	@flake8 scripts/* workforce_sentiment_monitoring/*.py
+	@flake8 scripts/* WorkforceSentimentMonitoring/*.py
 
 black:
-	@black scripts/* workforce_sentiment_monitoring/*.py
+	@black scripts/* WorkforceSentimentMonitoring/*.py
 
 test:
 	@coverage run -m pytest tests/*.py
@@ -22,8 +22,8 @@ clean:
 	@rm -f .coverage
 	@rm -fr */__pycache__ */*.pyc __pycache__
 	@rm -fr build dist
-	@rm -fr workforce_sentiment_monitoring-*.dist-info
-	@rm -fr workforce_sentiment_monitoring.egg-info
+	@rm -fr WorkforceSentimentMonitoring-*.dist-info
+	@rm -fr WorkforceSentimentMonitoring.egg-info
 
 install:
 	@pip install . -U

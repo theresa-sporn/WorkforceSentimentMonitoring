@@ -6,20 +6,20 @@ from os.path import split
 import argparse
 import pandas as pd
 
-# Import from workforce_sentiment_monitoring
-import workforce_sentiment_monitoring
-from workforce_sentiment_monitoring.lib import clean_data
+# Import from WorkforceSentimentMonitoring
+import WorkforceSentimentMonitoring
+from WorkforceSentimentMonitoring.lib import clean_data
 
 if __name__ == '__main__':
     usage = '%(prog)s'
-    description = 'workforce_sentiment_monitoring_description'
+    description = 'WorkforceSentimentMonitoring_description'
     # https://docs.python.org/3/library/argparse.html
     # https://docs.python.org/3/howto/argparse.html
     parser = argparse.ArgumentParser(description=description, usage=usage)
     args = parser.parse_args()
-    folder_source, _ = split(workforce_sentiment_monitoring.__file__)
+    folder_source, _ = split(WorkforceSentimentMonitoring.__file__)
     df = pd.read_csv('{}/data/data.csv.gz'.format(folder_source))
-    print('  workforce_sentiment_monitoring/data/data.csv.gz Loaded')
+    print('  WorkforceSentimentMonitoring/data/data.csv.gz Loaded')
 
     res = clean_data(df)
     res.to_csv('out.csv', index=False)
