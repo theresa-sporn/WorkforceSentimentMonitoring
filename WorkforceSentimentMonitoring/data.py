@@ -51,6 +51,11 @@ def holdout(df, target):
 
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.3)
 
+    X_train.reset_index(drop=True, inplace=True)
+    X_val.reset_index(drop=True, inplace=True)
+    y_train.reset_index(drop=True, inplace=True)
+    y_val.reset_index(drop=True, inplace=True)
+
     return (X_train, X_val, y_train, y_val)
 
 
