@@ -18,11 +18,21 @@ SCORE_COLS = [
 ]
 
 
+def get_lengths(df):
+    '''returns a df with columns with the length of the reviews'''
+    func = lambda x: len(x) if type(x) == str else 0
+    for feature in tqdm(FEATURE_COLS):
+        df[f'{feature}_length'] = df[feature].apply(func)
+    return df
+
+
 def getSubjectivity(text):
+    if pd.isnull(text): return text
     return TextBlob(text).sentiment.subjectivity
 
 
 def getPolarity(text):
+    if pd.isnull(text): return text
     return TextBlob(text).sentiment.polarity
 
 
@@ -37,11 +47,9 @@ def get_subjectivity_polarity_columns(df):
 def add_multinomial_nb_prediction_feature(df, y):
     """vectorize and predict with Naive Bayes"""
 
-    feature_cols = FEATURE_COLS
-
     for score in y.columns:
 
-        for feature in feature_cols:
+        for feature in FEATURE_COLS:
             vectorizer = TfidfVectorizer()
             X = vectorizer.fit_transform(df[feature])
             target = y[score]
