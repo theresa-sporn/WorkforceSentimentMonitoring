@@ -72,6 +72,6 @@ if __name__ == '__main__':
     # For introspections purpose to quickly get this functions on ipython
     import WorkforceSentimentMonitoring
     folder_source, _ = split(WorkforceSentimentMonitoring.__file__)
-    df = pd.read_csv('{}/data/data.csv.gz'.format(folder_source))
+    #df = pd.read_csv('{}/raw_data/data.csv.gz'.format(folder_source))
     get_df = get_df()
     print(' dataframe fetched')
