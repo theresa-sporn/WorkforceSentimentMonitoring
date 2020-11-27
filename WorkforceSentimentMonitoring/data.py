@@ -18,11 +18,12 @@ def get_data():
 
     # paths to raw_data folder containing .csv files
     # get data from .csv files (relative paths)
+    path = os.path.split(os.path.abspath(__file__))[0]
+    path_to_data = os.path.join(path, "../raw_data")
 
-    path = os.path.join(os.getcwd(), "../raw_data")
-    submission = pd.read_csv(os.path.join(path, "sample_submission.csv"))
-    train = pd.read_csv(os.path.join(path, "train.csv"))
-    test = pd.read_csv(os.path.join(path, "test.csv"))
+    submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
+    train = pd.read_csv(os.path.join(path_to_data, "train.csv"))
+    test = pd.read_csv(os.path.join(path_to_data, "test.csv"))
 
     return submission, train, test
 
