@@ -7,14 +7,17 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
+## get the dataframe
+
 from WorkforceSentimentMonitoring.data import get_data, merge
 
-# get the dataframe
+## initial dataframe
+
 submission, train, test = get_data()
 df = merge(submission, train, test)
 
 categories = ['work-balance', 'culture-values', 'career-opportunities','comp-benefits', 'senior-mgmt', 'overall']
-topics = ['work-balance', 'culture-values', 'career-opportunities','comp-benefits', 'senior-mgmt']
+# topics = ['work-balance', 'culture-values', 'career-opportunities','comp-benefits', 'senior-mgmt']
 df = df[categories]
 
 
@@ -43,6 +46,9 @@ for category in categories:
     index_max = np.argmax(values)
     pull = [0,0,0]
     pull[index_max] = 0.2
+    #marker = ['#e6f2ff', '#ff6600', '#ff0000']
+
+
     fig = go.Figure(data=[go.Pie(labels=labels, values=values, pull=pull, textinfo='label+percent', title=category)])
     #fig.show()
     #st.plotly_chart(fig)
@@ -51,11 +57,45 @@ for category in categories:
 
 # streamlit
 
-st.title('Workforce Sentiment Dashbord')
-st.markdown('### Welcome to your *monitoring dashboard*')
+st.title('Workforce Sentiment Analysis')
+st.markdown('### Welcome to your **monitoring dashboard**')
+
+st.markdown('# Overall sentiment of your employees')
+
+if not st.checkbox('Hide Graph', False, key=1):
+    st.plotly_chart(figures[categories.index('overall')])
+
+   # if
+
 st.sidebar.title("Visualization Selector")
 
-    #st.dataframe(df[:1])
+#st.dataframe(df[:10])
+
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+
+st.header("test html import")
+
+import os
+
+path = os.path.join(os.getcwd(), './notebooks/lda.html')
+
+HtmlFile = open(path, 'r', encoding='utf-8')
+source_code = HtmlFile.read()
+print(source_code)
+components.html(source_code, height=1000, width=1600)
+
+
+st.success('This is a success!')
+st.info('This is an info')
+st.warning('This is a semi success')
+st.error('Let\'s keep positive, this might be pretty close to a success!')
+
+
+
+
 if not st.checkbox('Hide Graph', False, key=1):
     st.plotly_chart(figures[categories.index('overall')])
 
