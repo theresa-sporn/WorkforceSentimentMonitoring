@@ -54,8 +54,8 @@ class Trainer(object):
             model = RandomForestClassifier(
                 class_weight='balanced',
                 max_features='auto',
-                max_depth=3,
-                n_estimators=100,
+                max_depth=5,
+                n_estimators=1000,
                 )
             self.model_params = {
             #'n_estimators': [int(x) for x in np.linspace(start = 50, stop = 200, num = 10)],
@@ -95,7 +95,7 @@ class Trainer(object):
         #pre_dispatch=None)
 
     @simple_time_tracker
-    def train(self, y_train, y_test): # old version
+    def model_train(self, y_train, y_test): # old version
         tic = time.time()
         #SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
         """iterate features, train and predict targets"""
@@ -112,7 +112,7 @@ class Trainer(object):
             print(classification_report(self.model.predict(self.X_test), y_test[target]))
         return (predictions, pred_scores)
 
-    def model_train(self, y_train, y_test):
+    def train(self, y_train, y_test):
         '''new version'''
         prediction_scores_dict = {}
         for target in tqdm(SCORE_COLS):
@@ -121,9 +121,9 @@ class Trainer(object):
                 self.add_grid_search()
             self.model = self.get_estimator()
             self.model.fit(self.X_train, y_train[target])
-            prediction_scores[target] = self.model.score(self.X_test, y_test[target])
+            prediction_scores_dict[target] = self.model.score(self.X_test, y_test[target])
 
-        return model, prediction_scores_dict
+        return self.model, prediction_scores_dict
 
     def save_model(self):
         """Save the model into a .joblib and upload it somewhere or save locally"""
