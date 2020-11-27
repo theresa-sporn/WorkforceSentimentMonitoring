@@ -17,7 +17,7 @@ submission, train, test = get_data()
 df = merge(submission, train, test)
 
 categories = ['work-balance', 'culture-values', 'career-opportunities','comp-benefits', 'senior-mgmt', 'overall']
-# topics = ['work-balance', 'culture-values', 'career-opportunities','comp-benefits', 'senior-mgmt']
+topics = ['work-balance', 'culture-values', 'career-opportunities','comp-benefits', 'senior-mgmt']
 df = df[categories]
 
 
@@ -46,16 +46,19 @@ for category in categories:
     index_max = np.argmax(values)
     pull = [0,0,0]
     pull[index_max] = 0.2
-    #marker = ['#e6f2ff', '#ff6600', '#ff0000']
+    marker = {'colors': [
+                     '#86ed8c',
+                     '#ff6767',
+                     '#e6f2ff',
+                    ]}
 
-
-    fig = go.Figure(data=[go.Pie(labels=labels, values=values, pull=pull, textinfo='label+percent', title=category)])
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values, pull=pull, textinfo='label+percent', title=category, marker=marker)])
     #fig.show()
     #st.plotly_chart(fig)
     figures.append(fig)
 
 
-# streamlit
+## streamlit
 
 st.title('Workforce Sentiment Analysis')
 st.markdown('### Welcome to your **monitoring dashboard**')
@@ -65,9 +68,11 @@ st.markdown('# Overall sentiment of your employees')
 if not st.checkbox('Hide Graph', False, key=1):
     st.plotly_chart(figures[categories.index('overall')])
 
-   # if
 
 st.sidebar.title("Visualization Selector")
+
+st.sidebar.checkbox("Show Analysis by Category", True, key=1)
+select = st.sidebar.selectbox('Select a Category', topics)
 
 #st.dataframe(df[:10])
 
@@ -79,7 +84,6 @@ import streamlit.components.v1 as components
 st.header("test html import")
 
 import os
-
 path = os.path.join(os.getcwd(), './notebooks/lda.html')
 
 HtmlFile = open(path, 'r', encoding='utf-8')
@@ -88,6 +92,7 @@ print(source_code)
 components.html(source_code, height=1000, width=1600)
 
 
+## feedback
 st.success('This is a success!')
 st.info('This is an info')
 st.warning('This is a semi success')
@@ -96,24 +101,22 @@ st.error('Let\'s keep positive, this might be pretty close to a success!')
 
 
 
-if not st.checkbox('Hide Graph', False, key=1):
-    st.plotly_chart(figures[categories.index('overall')])
-
-
-if st.sidebar.checkbox("Show Analysis of selected Category", False, key=1):
-    select = st.sidebar.selectbox('Select a Category', topics)
-
-
 if st.sidebar.checkbox("Show Analysis of selected Category", False, key=2):
+    select = st.sidebar.selectbox('Select a Category', topics)
+if st.sidebar.checkbox("Selected Category", False, key=3):
     st.markdown("## **Analysis**")
     st.markdown("### %s " % (select))
-    if not st.checkbox('Hide Graph', False, key=2):
+    if not st.checkbox('Hide Graph', False, key=4):
 
         'Review topic:', select
 
         for topic in topics:
             if topic == select:
-                st.plotly_chart(figures[topics.index(topic)])
+                 st.plotly_chart(figures[topics.index(topic)])
+
+
+
+    #if st.sidebar.checkbox("Show Analysis of selected Category", False, key=2):
 
 #figures
 
