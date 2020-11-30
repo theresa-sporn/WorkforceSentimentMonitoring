@@ -109,8 +109,6 @@ def drop_wrong_language(df, column, language = 'en'):
         print(f'Dropping {n_rows_to_drop} entries...')
         df = df[~is_wrong]
         df.reset_index(inplace=True, drop=True)
-        print('inplace=', inplace)
-        print(df)
         print('Process completed.')
         return df
     else:
