@@ -22,9 +22,9 @@ def get_data():
     path = os.path.split(os.path.abspath(__file__))[0]
     path_to_data = os.path.join(path, "../raw_data")
 
-    submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
-    train = pd.read_csv(os.path.join(path_to_data, "train.csv"))
-    test = pd.read_csv(os.path.join(path_to_data, "test.csv"))
+    submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv")).head(10)
+    train = pd.read_csv(os.path.join(path_to_data, "train.csv")).head(10)
+    test = pd.read_csv(os.path.join(path_to_data, "test.csv")).head(10)
 
     return submission, train, test
 
@@ -100,6 +100,10 @@ def drop_wrong_language(df, column, language = 'en', inplace=False):
     is_wrong = df[column].apply(detect) != language
     n_rows_to_drop = is_wrong.sum()
 
+    if n_rows_to_drop == 0:
+        print('No entries to drop.')
+        return df
+
     user_confirmation = None
     while not (user_confirmation is 'y' or user_confirmation is 'n'):
         user_confirmation = input(f'Drop {n_rows_to_drop} entries? y / [n]\n') or 'n'
@@ -113,10 +117,12 @@ def drop_wrong_language(df, column, language = 'en', inplace=False):
         else:
             print(f'Dropping {n_rows_to_drop} entries...')
             print('Process completed.')
-            return df[~is_wrong].reset_index(inplace=True, drop=True)
+            df = df[~is_wrong].reset_index(inplace=True, drop=True)
+            print(df)
+            return df
     else:
         print('Process aborted')
-        return None
+        return df
 
 
 def get_prepaired_data(target=SCORE_COLS):
@@ -130,7 +136,9 @@ def get_prepaired_data(target=SCORE_COLS):
     # drop entries in wrong languages
     df = drop_wrong_language(df, 'review')
     # holdout
+    print('Splitting train and test...')
     X_train, X_test, y_train, y_test = holdout(df, target)
+    print('Done!')
     return X_train, X_test, y_train, y_test
 
 
