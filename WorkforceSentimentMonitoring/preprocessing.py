@@ -5,14 +5,18 @@ from nltk.stem import WordNetLemmatizer
 
 def lowercase(text):
 	"""lowercase"""
-	[x.lower() for x in text]
+	text = [x.lower() for x in text]
 	return text
 
 def remove_punctuation(text):
-	"""remove punctuation"""
-	for punctuation in string.punctuation:
-		text = text.replace(punctuation, ' ')
-	return text
+    results = []
+    for i in text:
+        #print(i)
+        for punctuation in string.punctuation:
+            if punctuation in i:
+                i = i.replace(punctuation, ' ')
+        results.append(i)
+    return results
 
 def remove_numbers(text):
 	"""remove numbers"""
