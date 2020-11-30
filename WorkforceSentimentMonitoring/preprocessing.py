@@ -2,6 +2,7 @@ import string
 from nltk.corpus import stopwords
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
+import pandas as pd
 
 def lowercase(text):
 	"""lowercase"""
@@ -33,15 +34,25 @@ def remove_stopwords(text):
 def lemmatize(text):
 	"""Lemmatize text"""
 	lemmatizer = WordNetLemmatizer() # Initiate lemmatizer
-	lemmatized = [lemmatizer.lemmatize(word) for word in text] # Lemmatize
+	lemmatized = [lemmatizer.lemmatize(word) for word in text.split(" ")] # Lemmatize
 	lemmatized_string = " ".join(lemmatized)
 	text = lemmatized_string
 	return text
 
-def preprocessing(text):
-	preprocessed_text = lowercase(text)
-	preprocessed_text = remove_numbers(preprocessed_text)
-	preprocessed_text = remove_punctuation(preprocessed_text)
-	preprocessed_text = remove_stopwords(preprocessed_text)
-	preprocessed_text = lemmatize(preprocessed_text)
-	return preprocessed_text
+def preprocessing(text, to_lower, words_only, rm_stopwords):
+
+	if type(text) is not str:
+		return text
+
+	if to_lower:
+		text = text.lower()
+	if words_only:
+		text = remove_numbers(text)
+		text = remove_punctuation(text)
+	if rm_stopwords:
+		text = remove_stopwords(text)
+
+	text = lemmatize(text)
+	return text
+
+
