@@ -3,6 +3,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
+from langdetect import detect
 
 SCORE_COLS = [
     "work-balance",
@@ -16,8 +17,6 @@ SCORE_COLS = [
 
 def get_data():
 
-    # paths to raw_data folder containing .csv files
-    # get data from .csv files (relative paths)
     path = os.path.split(os.path.abspath(__file__))[0]
     path_to_data = os.path.join(path, "../raw_data")
 
@@ -93,18 +92,49 @@ def holdout(df, target):
     return (X_train, X_val, y_train, y_val)
 
 
+def drop_wrong_language(df, column, language = 'en'):
+    '''drops entries written in languages other thatn the specified'''
+    print('Identifying entries in other languages...')
+    is_wrong = df[column].apply(detect) != language
+    n_rows_to_drop = is_wrong.sum()
+
+    if n_rows_to_drop == 0:
+        print('No entries to drop.')
+        return df
+
+    user_confirmation = None
+    while not (user_confirmation is 'y' or user_confirmation is 'n'):
+        user_confirmation = input(f'Drop {n_rows_to_drop} entries? y / [n]\n') or 'n'
+    if user_confirmation is 'y':
+        print(f'Dropping {n_rows_to_drop} entries...')
+        df = df[~is_wrong]
+        df.reset_index(inplace=True, drop=True)
+        print('inplace=', inplace)
+        print(df)
+        print('Process completed.')
+        return df
+    else:
+        print('Process aborted')
+        return df
+
+
 def get_prepaired_data(target=SCORE_COLS):
     """runs all functions above and returns X & y datasets (train & test) ready for preprocessing"""
     # retrieve data
+    print('Reading data...')
     submission, train, test = get_data()
     # merge data
+    print('Merging data into a single DataFrame...')
     df = merge(submission, train, test)
+    # drop entries in wrong languages
+    df = drop_wrong_language(df, 'review')
     # holdout
+    print('Splitting train and test...')
     X_train, X_test, y_train, y_test = holdout(df, target)
+    print('Done!')
     return X_train, X_test, y_train, y_test
 
 
 if __name__ == "__main__":
 
-    df = get_data()
-    print(df)
+    X_train, X_test, y_train, y_test = get_prepaired_data()

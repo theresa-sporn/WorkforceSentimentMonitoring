@@ -30,21 +30,24 @@ def remove_stopwords(text):
 def lemmatize(text):
 	"""Lemmatize text"""
 	lemmatizer = WordNetLemmatizer() # Initiate lemmatizer
-	lemmatized = [lemmatizer.lemmatize(word) for word in text] # Lemmatize
+	lemmatized = [lemmatizer.lemmatize(word) for word in text.split(" ")] # Lemmatize
 	lemmatized_string = " ".join(lemmatized)
 	return lemmatized_string
 
 def preprocessing(text, to_lower, words_only, rm_stopwords):
 
-	if pd.isnull(text): return text
+	if type(text) is not str:
+		return text
 
 	if to_lower:
 		text = text.lower()
-	elif words_only:
+	if words_only:
 		text = remove_numbers(text)
 		text = remove_punctuation(text)
-	elif rm_stopwords:
+	if rm_stopwords:
 		text = remove_stopwords(text)
-	else:
-		text = lemmatize(text)
+
+	text = lemmatize(text)
 	return text
+
+
