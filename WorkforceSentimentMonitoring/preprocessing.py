@@ -5,8 +5,8 @@ from nltk.stem import WordNetLemmatizer
 
 def lowercase(text):
 	"""lowercase"""
-	lowercased = text.lower()
-	return lowercased
+	[x.lower() for x in text]
+	return text
 
 def remove_punctuation(text):
 	"""remove punctuation"""
