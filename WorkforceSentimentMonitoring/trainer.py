@@ -18,6 +18,8 @@ from sklearn.naive_bayes import MultinomialNB
 from WorkforceSentimentMonitoring.data import get_data, merge, holdout
 from WorkforceSentimentMonitoring.preprocessing import preprocessing
 from WorkforceSentimentMonitoring.utils import simple_time_tracker
+from WorkforceSentimentMonitoring.encoders
+
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -72,6 +74,7 @@ class Trainer(object):
 
     def set_pipeline(self):
         """implement the feature pipelines"""
+
         pass
 
     def add_grid_search(self):
