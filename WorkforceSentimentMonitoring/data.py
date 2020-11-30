@@ -22,9 +22,9 @@ def get_data():
     path = os.path.split(os.path.abspath(__file__))[0]
     path_to_data = os.path.join(path, "../raw_data")
 
-    submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv")).head(10)
-    train = pd.read_csv(os.path.join(path_to_data, "train.csv")).head(10)
-    test = pd.read_csv(os.path.join(path_to_data, "test.csv")).head(10)
+    submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
+    train = pd.read_csv(os.path.join(path_to_data, "train.csv"))
+    test = pd.read_csv(os.path.join(path_to_data, "test.csv"))
 
     return submission, train, test
 
