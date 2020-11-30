@@ -14,7 +14,7 @@ class Preprocessor(BaseEstimator, TransformerMixin):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
-        self.to_lower = self.kwargs.get('to_lower', False)
+        self.to_lower = self.kwargs.get('to_lower', True)
         self.rm_stopwords = self.kwargs.get('rm_stopwords', False)
         self.words_only = self.kwargs.get('words_only', True)
 
