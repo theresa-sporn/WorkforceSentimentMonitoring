@@ -49,8 +49,8 @@ def make_pyldavis(dictionary, corpus, texts, start, limit, step):
     model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=texts, start=4, limit=16, step=2)
     model_list.index(x.index(max(coherence_values))) #change!
     max_y = max(coherence_values)
-    max_x = max_x = coherence_values.index(max(coherence_values))  #change!
-    optimal_model = model_list[max_x] #change!
+    max_x = coherence_values.index(max(coherence_values))  #change!
+    optimal_model = model_list[coherence_values.index(max(coherence_values))] #change!
     pyLDAvis.enable_notebook()
     vis = pyLDAvis.gensim.prepare(optimal_model, corpus, dictionary=optimal_model.id2word)
     return vis
