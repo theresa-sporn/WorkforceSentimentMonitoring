@@ -9,6 +9,8 @@ from textblob import TextBlob
 from tqdm import tqdm
 
 
+
+
 class Preprocessor(BaseEstimator, TransformerMixin):
 
     def __init__(self, **kwargs):
@@ -64,23 +66,17 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
         self.subjectivity = self.kwargs.get('subjectivity', True)
         self.length = self.kwargs.get('length', True)
 
-    def fit(self, X, y=None, X_test=None):
+    def fit(self, X, y=None):
         assert isinstance(X, pd.DataFrame)
         self.text_columns = X.select_dtypes('object').columns
         return self
 
-    def transform(self, X, y=None, X_test=None):
+    def transform(self, X, y=None):
         assert isinstance(X, pd.DataFrame)
         if self.length: X = self.get_length(X)
         if self.subjectivity or self.polarity:
             X = self.get_subjectivity_polarity_columns(X)
-        if X_test:
-            if self.length: X_test = self.get_length(X_test)
-            if self.subjectivity or self.polarity:
-                X_test = self.get_subjectivity_polarity_columns(X_test)
-            return X, X_test
-        else:
-            return X
+        return X
 
     def get_length(self, df):
         '''returns a df with columns with the length of the reviews'''
