@@ -116,6 +116,13 @@ def drop_wrong_language(df, column, language = 'en'):
         return df
 
 
+def encode_target(y):
+    encoding = {1 : 0, 2 : 0, 3 : 1, 4 : 2, 5 : 2}
+    for col in y.columns:
+        y[col] = y[col].map(encoding)
+
+    return y
+
 def get_prepaired_data(target=SCORE_COLS):
     """runs all functions above and returns X & y datasets (train & test) ready for preprocessing"""
     # retrieve data
@@ -129,7 +136,12 @@ def get_prepaired_data(target=SCORE_COLS):
     # holdout
     print('Splitting train and test...')
     X_train, X_test, y_train, y_test = holdout(df, target)
+    # Encode y_train and y_train
+    print('Encoding targets...')
+    y_train = encode_target(y_train)
+    y_test = encode_target(y_test)
     print('Done!')
+
     return X_train, X_test, y_train, y_test
 # are you working?
 
