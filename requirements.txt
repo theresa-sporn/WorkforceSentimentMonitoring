@@ -13,3 +13,4 @@ textblob
 joblib
 gunicorn
 streamlit
+langdetect
