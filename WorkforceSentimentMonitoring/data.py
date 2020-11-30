@@ -104,7 +104,7 @@ def drop_wrong_language(df, column, language = 'en'):
 
     user_confirmation = None
     while not (user_confirmation is 'y' or user_confirmation is 'n'):
-        user_confirmation = input(f'Drop {n_rows_to_drop} entries? y / [n]\n') or 'n'
+        user_confirmation = input(f'Drop {n_rows_to_drop} entries? [y] / n\n') or 'y'
     if user_confirmation is 'y':
         print(f'Dropping {n_rows_to_drop} entries...')
         df = df[~is_wrong]
@@ -147,4 +147,5 @@ def get_prepaired_data(target=SCORE_COLS):
 
 if __name__ == "__main__":
 
-    X_train, X_test, y_train, y_test = get_prepaired_data()
+    #X_train, X_test, y_train, y_test = get_prepaired_data()
+    print(os.path.abspath(__file__))
