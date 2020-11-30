@@ -31,7 +31,8 @@ def lemmatize(text):
 	lemmatizer = WordNetLemmatizer() # Initiate lemmatizer
 	lemmatized = [lemmatizer.lemmatize(word) for word in text] # Lemmatize
 	lemmatized_string = " ".join(lemmatized)
-	return lemmatized_string
+	text = lemmatized_string
+	return text
 
 def preprocessing(text):
 	preprocessed_text = lowercase(text)
