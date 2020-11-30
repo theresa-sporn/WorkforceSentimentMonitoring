@@ -17,8 +17,6 @@ SCORE_COLS = [
 
 def get_data():
 
-    # paths to raw_data folder containing .csv files
-    # get data from .csv files (relative paths)
     path = os.path.split(os.path.abspath(__file__))[0]
     path_to_data = os.path.join(path, "../raw_data")
 
