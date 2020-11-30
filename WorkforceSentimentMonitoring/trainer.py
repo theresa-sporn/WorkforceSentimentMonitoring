@@ -18,25 +18,22 @@ from sklearn.naive_bayes import MultinomialNB
 from WorkforceSentimentMonitoring.data import get_data, merge, holdout
 from WorkforceSentimentMonitoring.preprocessing import preprocessing
 from WorkforceSentimentMonitoring.utils import simple_time_tracker
-from WorkforceSentimentMonitoring.encoders
+from test_data.backup_test_data import get_test_data
 
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-FEATURE_COLS = ['summary', 'positives', 'negatives', 'advice_to_mgmt', 'review']
+FEATURE_COLS = ['positives', 'negatives', 'review']
 SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
 class Trainer(object):
     ESTIMATOR = "RandomForest"
     SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
-    def __init__(self, X_train, X_test, **kwargs):
+    def __init__(self, data, **kwargs):
         self.kwargs = kwargs
-        self.X_train = X_train
-        self.X_test = X_test
-        self.gridsearch = kwargs.get("gridsearch", False)  # apply gridsearch if True
-        # self.df = self.get_lengths()
-        # self.nrows = self.X_train.shape[0]  # nb of rows to train on
+        self.data = get_test_data()
+        self.model = self.kwargs.get('saved_model', 'model.joblib')
 
     def get_estimator(self):
         estimator = self.kwargs.get("estimator", self.ESTIMATOR)
@@ -127,6 +124,13 @@ class Trainer(object):
             prediction_scores_dict[target] = self.model.score(self.X_test, y_test[target])
 
         return self.model, prediction_scores_dict
+
+
+    def load_model(self):
+        clf = joblib.load('model.joblib')
+        print('model loaded')
+        y_pred = clf.predict(X)
+
 
     def save_model(self):
         """Save the model into a .joblib and upload it somewhere or save locally"""

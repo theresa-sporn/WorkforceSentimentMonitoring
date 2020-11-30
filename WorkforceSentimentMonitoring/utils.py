@@ -27,9 +27,3 @@ def simple_time_tracker(method):
         return result
 
     return timed
-
-
-def load_model():
-    clf = joblib.load('model.joblib')
-    print('model.joblib loaded')
-    y_pred = clf.predict(X)
