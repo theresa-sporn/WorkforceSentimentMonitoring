@@ -109,8 +109,6 @@ def drop_wrong_language(df, column, language = 'en'):
         print(f'Dropping {n_rows_to_drop} entries...')
         df = df[~is_wrong]
         df.reset_index(inplace=True, drop=True)
-        print('inplace=', inplace)
-        print(df)
         print('Process completed.')
         return df
     else:
@@ -133,7 +131,7 @@ def get_prepaired_data(target=SCORE_COLS):
     X_train, X_test, y_train, y_test = holdout(df, target)
     print('Done!')
     return X_train, X_test, y_train, y_test
-
+# are you working?
 
 if __name__ == "__main__":
 
