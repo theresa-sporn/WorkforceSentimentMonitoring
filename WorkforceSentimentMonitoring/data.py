@@ -147,5 +147,5 @@ def get_prepaired_data(target=SCORE_COLS):
 
 if __name__ == "__main__":
 
-    #X_train, X_test, y_train, y_test = get_prepaired_data()
-    print(os.path.abspath(__file__))
+
+    X_train, X_test, y_train, y_test = get_prepaired_data()
