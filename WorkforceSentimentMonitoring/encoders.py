@@ -4,7 +4,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from WorkforceSentimentMonitoring.data import get_prepaired_data
-from WorkforceSentimentMonitoring.feature_engineering import get_lengths, getSubjectivity, getPolarity
+from WorkforceSentimentMonitoring.feature_engineering import get_lengths, getSubjectivity, getPolarity, extract_NB_predictions
 from WorkforceSentimentMonitoring.preprocessing import preprocessing
 from textblob import TextBlob
 from tqdm import tqdm
@@ -115,14 +115,7 @@ class PredictionFeaturesExtractor(BaseEstimator, TransformerMixin):
         self.score_cols = y.columns
 
     def transform(self, X, y):
-        for score in score_cols:
-            y_ = y[col]
-            for feature in text_columns:
-                model = MultinomialNB()
-                X_ = vectorize(X[feature])
-                model.fit(X_, y_)
-                X[f'{feature}_{score}_nb'] = model.predict(X_, y_)
-        return X
+        return extract_NB_predictions(X, y, self.score_cols)
 
     def vectorize(self, feature_col):
         vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1,7))
