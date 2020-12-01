@@ -14,3 +14,7 @@ joblib
 gunicorn
 streamlit
 langdetect
+numpy
+plotly
+nltk
+tqdm

@@ -1,6 +1,7 @@
 import warnings
 import time
 from tqdm import tqdm
+import pickle
 
 import pandas as pd
 import numpy as np
@@ -27,7 +28,7 @@ FEATURE_COLS = ['positives', 'negatives', 'review']
 SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
 class Trainer(object):
-    ESTIMATOR = "RandomForest"
+    MODEL = pickle.load(open('final_model.pkl', 'rb'))
     SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
     def __init__(self, data, **kwargs):
