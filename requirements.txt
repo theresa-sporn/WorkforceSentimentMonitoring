@@ -18,5 +18,5 @@ numpy
 plotly
 nltk
 tqdm
-maatplotlib
+matplotlib
 plotly
