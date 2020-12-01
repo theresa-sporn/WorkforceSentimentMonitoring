@@ -47,11 +47,31 @@ pd.set_option('display.width', 200)
 #     data.loc[:, 'Frequency'] = data['Frequency'].map(drows)
 #     return data
 
+def get_df():
+    path = os.path.join(os.getcwd(), '../raw_data')
+    submission = pd.read_csv(os.path.join(path, 'sample_submission.csv'))
+    train = pd.read_csv(os.path.join(path, 'train.csv'))
+    test = pd.read_csv(os.path.join(path,'test.csv'))
+
+    test = pd.merge(test, submission, on=['ID'])
+    frames = [train, test]
+    df = pd.concat(frames)
+    df = df.rename(columns={'score_1':'work-balance', 'score_2':'culture-values', 'score_3':'career-opportunities', 'score_4':'comp-benefits', 'score_5':'senior-mgmt', 'score_6':'helpful-count'})
+    df = df.drop(columns=['ID', 'Place', 'location', 'date', 'status', 'job_title', 'helpful-count'])
+    # create a review column containing all text information
+    text_columns = ['summary', 'positives', 'negatives', 'advice_to_mgmt']
+    df['review'] = df[text_columns].astype('U').agg(' '.join, axis=1)
+    # drop missing values
+    categories = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
+    df = df.dropna(axis=0, subset=categories)
+    df = df.drop_duplicates()
+    df[categories] = df[categories].astype('uint8')
+    return df
 
 if __name__ == '__main__':
     # For introspections purpose to quickly get this functions on ipython
     import WorkforceSentimentMonitoring
     folder_source, _ = split(WorkforceSentimentMonitoring.__file__)
-    df = pd.read_csv('{}/data/data.csv.gz'.format(folder_source))
-    get_data = get_data()
+    #df = pd.read_csv('{}/raw_data/data.csv.gz'.format(folder_source))
+    get_df = get_df()
     print(' dataframe fetched')
