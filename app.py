@@ -13,7 +13,9 @@ import os
 ## get the dataframe
 
 from WorkforceSentimentMonitoring.data import get_data, merge
+from WorkforceSentimentMonitoring.data import get_prepaired_data
 
+#st.write(get_prepaired_data())
 ## initial dataframe
 
 submission, train, test = get_data()
@@ -119,27 +121,28 @@ df_bar.rename(columns = {'index':'review topics','positive':'positive [%]', 'neg
 st.markdown("""
     # Workforce Sentiment Analysis
     ### Hello :wave: and welcome to your **monitoring dashboard** :chart_with_upwards_trend:
-    ### :white_check_mark:  When your employees are happy, they feel invested in the organisation's goals and are more compelled to their work
-    ### :white_check_mark:  Find out about your employees happiness
-    ### :white_check_mark:  Improve and boost your working environment :rocket:
+    #### :white_check_mark:  When your employees are happy, they feel invested in the organisation's goals and are more compelled to their work
+    #### :white_check_mark:  Find out about your employees happiness
+    #### :white_check_mark:  Improve and boost your working environment :rocket:
 """)
+' '
 
-st.info('Find below indepth information on the:')
-st.write('- **Overall** happiness of your company')
-st.write('''- Indepth analysis of topics:
-                - **Work-Life-Balance**
-                - **Company culture**
-                - **Career opportunities**
-                - **Company benefits**
-                - **Senior management**
-        ''')
+
+# st.write('''- **Work-Life-Balance**
+#             - **Company culture**
+#             - **Career opportunities**
+#             - **Company benefits**
+#             - **Senior management**
+#         ''')
 
 st.sidebar.title("Visualization Selector")
 select = st.sidebar.selectbox('Select a Category', categories)
 
+st.markdown('## Sentiment Analysis')
 for category in categories:
     if select == category:
-        st.markdown(f'## {category} sentiment of your employees')
+        st.info('**Overall** happiness of your company')
+
 
         if st.checkbox('Show Graph', True, key=104):
             labels = ['positive', 'negative', 'neutral']
