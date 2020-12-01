@@ -12,14 +12,14 @@ import os
 
 ## get the dataframe
 
-from WorkforceSentimentMonitoring.data import get_data, merge
-from WorkforceSentimentMonitoring.data import get_prepaired_data
+# from WorkforceSentimentMonitoring.data import get_data, merge
+# from WorkforceSentimentMonitoring.data import get_prepaired_data
 
-#st.write(get_prepaired_data())
-## initial dataframe
+# submission, train, test = get_data()
+# df = merge(submission, train, test)
 
-submission, train, test = get_data()
-df = merge(submission, train, test)
+df = pd.read_csv('./raw_data/pred_sample.csv').drop('Unnamed: 0', axis=1)
+
 
 columns = ['work-balance',
            'culture-values',
@@ -44,14 +44,18 @@ df= df.reindex(columns=categories)
 
 
 # count pos, neg, neutral reviews
-pos_counts = df[df>=4].count()
-neg_counts = df[df<=2].count()
-neutral_counts = df[df==3].count()
+# pos_counts = df[df>=4].count()
+# neg_counts = df[df<=2].count()
+# neutral_counts = df[df==3].count()
+
+pos_counts = df[df==2].count()
+neg_counts = df[df==0].count()
+neutral_counts = df[df==1].count()
 
 sentiment = ['positive',
-          'negative',
-          'neutral'
-          ]
+             'negative',
+             'neutral'
+            ]
 
 
 df_counts = pd.DataFrame([pos_counts, neg_counts, neutral_counts], index=sentiment)
@@ -90,7 +94,6 @@ df_bar.negative = (df_bar.negative/df_bar.negative.sum())*100
 df_bar.positive = (df_bar.positive/df_bar.positive.sum())*100
 df_bar.neutral = (df_bar.neutral/df_bar.neutral.sum())*100
 df_bar.reset_index(inplace=True)
-
 df_bar.rename(columns = {'index':'review topics','positive':'positive [%]', 'negative':'negative [%]', 'neutral':'neutral [%]'}, inplace=True)
 
 
@@ -100,22 +103,16 @@ df_bar.rename(columns = {'index':'review topics','positive':'positive [%]', 'neg
 
 ### streamlit
 
+st.sidebar.title("Visualization Selector")
+st.sidebar.write('Monitoring categories:')
+st.sidebar.write('- **Overall satisfaction**')
+st.sidebar.write('- **Work-Life-Balance**')
+st.sidebar.write('- **Company culture**')
+st.sidebar.write('- **Career opportunities**')
+st.sidebar.write('- **Company benefits**')
+st.sidebar.write('- **Senior management**')
 
-# st.title('Workforce Sentiment Analysis')
-# st.markdown('### Welcome to your **monitoring dashboard**: Find out how happy your employees are :white_check_mark:')
-
-# txt = st.text_area('Text to analyze', '''
-#     It was the best of times, it was the worst of times, it was
-#     the age of wisdom, it was the age of foolishness, (...)
-#     ''')
-
-
-    # **bold** or *italic* text with [links](http://github.com/streamlit) and:
-    # - bullet points
-
-
-
-#st.sidebar.checkbox("Show Analysis by Category", True, key=1)
+select = st.sidebar.selectbox('Select category you want to visualize', categories)
 
 
 st.markdown("""
@@ -125,23 +122,20 @@ st.markdown("""
     #### :white_check_mark:  Find out about your employees happiness
     #### :white_check_mark:  Improve and boost your working environment :rocket:
 """)
-' '
+
+space = '''<br>'''
+
+components.html(space, height=50, width=1200)
 
 
-# st.write('''- **Work-Life-Balance**
-#             - **Company culture**
-#             - **Career opportunities**
-#             - **Company benefits**
-#             - **Senior management**
-#         ''')
 
-st.sidebar.title("Visualization Selector")
-select = st.sidebar.selectbox('Select a Category', categories)
+
+
 
 st.markdown('## Sentiment Analysis')
 for category in categories:
     if select == category:
-        st.info('**Overall** happiness of your company')
+        st.info(f'Employees\' satisfaction: **{category}**')
 
 
         if st.checkbox('Show Graph', True, key=104):
@@ -167,24 +161,25 @@ for category in categories:
 
 
 
+        if select == categories[0]:
+          st.markdown(f'## Indepth sentiment analysis')
+          option = st.selectbox('Select a line to filter', labels, key=100)
+          if option == 'positive':
+              color = '#dffde9'
+              fig = px.bar(df_bar, x='review topics', y='positive [%]', title="Positive Reviews")
+              fig.update_traces(marker_color=color)
+              st.plotly_chart(fig)
+          elif option == 'negative':
+              color = 'red'
+              fig = px.bar(df_bar, x='review topics', y='negative [%]', title="Negative Reviews")
+              fig.update_traces(marker_color=color)
+              st.plotly_chart(fig)
+          else:
+              color = 'lightblue'
+              fig = px.bar(df_bar, x='review topics', y='neutral [%]', title="Neutral Reviews")
+              fig.update_traces(marker_color=color)
+              st.plotly_chart(fig)
 
-        st.markdown('## Overall sentiment of your employees')
-        option = st.selectbox('Select a line to filter', labels, key=100)
-        if option == 'positive':
-            color = '#dffde9'
-            fig = px.bar(df_bar, x='review topics', y='positive [%]', title="Positive Reviews")
-            fig.update_traces(marker_color=color)
-            st.plotly_chart(fig)
-        elif option == 'negative':
-            color = 'red'
-            fig = px.bar(df_bar, x='review topics', y='negative [%]', title="Negative Reviews")
-            fig.update_traces(marker_color=color)
-            st.plotly_chart(fig)
-        else:
-            color = 'lightblue'
-            fig = px.bar(df_bar, x='review topics', y='neutral [%]', title="Neutral Reviews")
-            fig.update_traces(marker_color=color)
-            st.plotly_chart(fig)
 
 
 
