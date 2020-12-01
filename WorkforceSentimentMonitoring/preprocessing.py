@@ -40,6 +40,10 @@ def lemmatize(text):
 	text = lemmatized_string
 	return text
 
+def tokenize(df):
+    tokenized_text = word_tokenize(str(df))
+    return tokenized_text
+
 def preprocessing(text, to_lower, words_only, rm_stopwords):
 
 	if type(text) is not str:
