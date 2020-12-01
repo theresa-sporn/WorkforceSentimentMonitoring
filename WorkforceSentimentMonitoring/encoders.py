@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.feature_extraction.text import TfidfVectorizer
 from WorkforceSentimentMonitoring.data import get_prepaired_data
 from WorkforceSentimentMonitoring.feature_engineering import get_lengths, getSubjectivity, getPolarity
 from WorkforceSentimentMonitoring.preprocessing import preprocessing
@@ -17,7 +18,7 @@ class Preprocessor(BaseEstimator, TransformerMixin):
         self.kwargs = kwargs
 
         self.to_lower = self.kwargs.get('to_lower', True)
-        self.rm_stopwords = self.kwargs.get('rm_stopwords', False)
+        self.rm_stopwords = self.kwargs.get('rm_stopwords', True)
         self.words_only = self.kwargs.get('words_only', True)
 
     def fit(self, X, y=None):
@@ -102,6 +103,31 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
             if self.length:
                 df[f"polarity_{feature}"] = df[feature].apply(self.getPolarity)
         return df
+
+
+class PredictionFeaturesExtractor(BaseEstimator, TransformerMixin):
+
+    def __init__(self):
+        pass
+
+    def fit(self, X, y):
+        self.text_columns = X.select_dtypes('object').columns
+        self.score_cols = y.columns
+
+    def transform(self, X, y):
+        for score in score_cols:
+            y_ = y[col]
+            for feature in text_columns:
+                model = MultinomialNB()
+                X_ = vectorize(X[feature])
+                model.fit(X_, y_)
+                X[f'{feature}_{score}_nb'] = model.predict(X_, y_)
+        return X
+
+    def vectorize(self, feature_col):
+        vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1,7))
+        return vectorizer.fit_transform(feature_col)
+
 
 if __name__ == '__main__':
     X_train, X_test, y_train, y_test = get_prepaired_data()
