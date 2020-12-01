@@ -1,10 +1,10 @@
 import pandas as pd
-
 import concurrent.futures
 import functools
 import time
-
 from tqdm import tqdm
+import time
+
 
 def extract_negative(df):
     """return df with negative reviews and their labels"""
@@ -67,10 +67,17 @@ def timing(f):
         return ret
     return wrap
 
-if __name__ == '__main__':
-    @progress_bar(expected_time=11)
-    def test_func():
-        time.sleep(10)
-        return "result"
+  
+def simple_time_tracker(method):
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+        if 'log_time' in kw:
+            name = kw.get('log_name', method.__name__.upper())
+            kw['log_time'][name] = int((te - ts))
+        else:
+            print(method.__name__, round(te - ts, 2))
+        return result
 
-    print(test_func())  # prints "result"
+    return timed
