@@ -1,7 +1,12 @@
-MANIFEST.in
-README.md
-setup.py
 WorkforceSentimentMonitoring/.DS_Store
+.gitignore
+MANIFEST.in
+Makefile
+README.md
+app.py
+requirements.txt
+setup.py
+.github/workflows/pythonpackage.yml
 WorkforceSentimentMonitoring/__init__.py
 WorkforceSentimentMonitoring/data.py
 WorkforceSentimentMonitoring/encoders.py
@@ -19,5 +24,8 @@ WorkforceSentimentMonitoring.egg-info/top_level.txt
 scripts/WorkforceSentimentMonitoring-run
 test_data/__init__.py
 test_data/backup_test_data.py
+notebooks/.keep
+notebooks/lda.html
+scripts/WorkforceSentimentMonitoring-run
 tests/__init__.py
 tests/lib_test.py

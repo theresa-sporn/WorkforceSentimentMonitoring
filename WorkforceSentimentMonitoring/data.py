@@ -59,7 +59,7 @@ def merge(submission, train, test):
 
     # create a review column containing all text information
     text_columns = ["summary", "positives", "negatives", "advice_to_mgmt"]
-    df["review"] = df[text_columns].astype("U").agg(" ".join, axis=1)
+    df["review"] = df[text_columns].fillna('').sum(axis=1)
 
     # drop missing values
     categories = [
@@ -114,8 +114,7 @@ def drop_wrong_language(df, column, language = 'en'):
     else:
         print('Process aborted')
         return df
-
-
+      
 def encode_target(y):
     encoding = {1 : 0, 2 : 0, 3 : 1, 4 : 2, 5 : 2}
     for col in y.columns:
@@ -123,14 +122,19 @@ def encode_target(y):
 
     return y
 
-def get_prepaired_data(target=SCORE_COLS):
-    """runs all functions above and returns X & y datasets (train & test) ready for preprocessing"""
+def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
+    """runs all functions above and returns X & y datasets (train & test) ready for preprocessing
+       if keep_text_cols=True the returned DataFrame will keep the text columns from which the review column is created"""
     # retrieve data
     print('Reading data...')
     submission, train, test = get_data()
     # merge data
     print('Merging data into a single DataFrame...')
     df = merge(submission, train, test)
+    # drop text columns if keep_text_cols = False
+    if not keep_text_cols:
+        print('Dropping initial text columns...')
+        df = df.drop(columns=["summary", "positives", "negatives", "advice_to_mgmt"])
     # drop entries in wrong languages
     df = drop_wrong_language(df, 'review')
     # holdout
@@ -147,5 +151,5 @@ def get_prepaired_data(target=SCORE_COLS):
 
 if __name__ == "__main__":
 
-    #X_train, X_test, y_train, y_test = get_prepaired_data()
-    print(os.path.abspath(__file__))
+
+    X_train, X_test, y_train, y_test = get_prepaired_data()
