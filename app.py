@@ -19,8 +19,14 @@ import os
 # submission, train, test = get_data()
 # df = merge(submission, train, test)
 
-df = pd.read_csv('./sample_data/pred_sample.csv').drop('Unnamed: 0', axis=1)
+#df = pd.read_csv('./sample_data/pred_sample.csv').drop('Unnamed: 0', axis=1)
 
+df = pd.DataFrame()
+uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+
+st.write(df)
 
 
 columns = ['work-balance',
