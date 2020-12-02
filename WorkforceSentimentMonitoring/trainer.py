@@ -113,7 +113,7 @@ class Trainer(object):
             print(classification_report(self.model.predict(self.X_test), y_test[target]))
         return (predictions, pred_scores)
 
-    def train(self, y_train, y_test):
+    def train(self):
         '''new version'''
         prediction_scores_dict = {}
         for target in tqdm(SCORE_COLS):
@@ -123,6 +123,10 @@ class Trainer(object):
             self.model = self.get_estimator()
             self.model.fit(self.X_train, y_train[target])
             prediction_scores_dict[target] = self.model.score(self.X_test, y_test[target])
+        for target in tqdm(SCORE_COLS):
+            model = LogisticRegression(max_iter=1000)
+            model.fit(X_train, y_train[target])
+            prediction_scores_dict[target] = model.score(X_test, y_test[target])
 
         return self.model, prediction_scores_dict
 
