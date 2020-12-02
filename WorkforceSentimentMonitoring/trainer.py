@@ -1,7 +1,7 @@
 import warnings
 import time
 from tqdm import tqdm
-import pickle
+import joblib
 
 import pandas as pd
 import numpy as np
@@ -28,7 +28,7 @@ FEATURE_COLS = ['positives', 'negatives', 'review']
 SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
 class Trainer(object):
-    MODEL = pickle.load(open('final_model.pkl', 'rb'))
+    MODEL = joblib.load('joblib_files/')
     SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
     def __init__(self, data, **kwargs):
@@ -128,7 +128,7 @@ class Trainer(object):
 
 
     def load_model(self):
-        clf = joblib.load('model.joblib')
+        clf = joblib.load('clf_model.joblib')
         print('model loaded')
         y_pred = clf.predict(X)
 
