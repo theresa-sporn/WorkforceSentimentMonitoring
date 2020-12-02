@@ -4,6 +4,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
 from langdetect import detect
+from WorkforceSentimentMonitoring.utils import timing, progress_bar
+import time
 
 SCORE_COLS = [
     "work-balance",
@@ -91,11 +93,17 @@ def holdout(df, target):
 
     return (X_train, X_val, y_train, y_val)
 
+@progress_bar(expected_time=480)
+def detect_wrong_language(df, column, language='en'):
+    '''returns boolean series'''
+    return df[column].apply(detect) != language
 
 def drop_wrong_language(df, column, language = 'en'):
     '''drops entries written in languages other thatn the specified'''
     print('Identifying entries in other languages...')
-    is_wrong = df[column].apply(detect) != language
+
+    is_wrong = detect_wrong_language(df, column, language)
+
     n_rows_to_drop = is_wrong.sum()
 
     if n_rows_to_drop == 0:
@@ -109,14 +117,13 @@ def drop_wrong_language(df, column, language = 'en'):
         print(f'Dropping {n_rows_to_drop} entries...')
         df = df[~is_wrong]
         df.reset_index(inplace=True, drop=True)
-        print('Process completed.')
         return df
     else:
         print('Process aborted')
         return df
-      
+
 def encode_target(y):
-    encoding = {1 : 0, 2 : 0, 3 : 1, 4 : 2, 5 : 2}
+    encoding = {1 : 0, 2 : 0, 3 : 0, 4 : 1, 5 : 1}
     for col in y.columns:
         y[col] = y[col].map(encoding)
 

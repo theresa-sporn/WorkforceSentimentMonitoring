@@ -43,33 +43,27 @@ def get_subjectivity_polarity_columns(df):
         df[f"polarity_{feature}"] = df[feature].apply(getPolarity)
     return df
 
+def export_joblib(estimator, name):
+    dirname = os.path.abspath('')
+    filename = os.path.join(dirname, f'../joblib_files/{name}.joblib')
+    joblib.dump(estimator, filename)
 
-def add_multinomial_nb_prediction_feature(df_train, df_test, y_train, y_test):
-    """vectorize and predict with Naive Bayes"""
-    scores_dict= {}
-    for score in y_test.columns:
-        result_scores = {}
-        for feature in df_train.select_dtypes('object').columns:
-            # instantiate vectorizer
-            vectorizer = TfidfVectorizer(analyzer='char', ngram_range=(1,7))
-            # vectorize train set
-            X_train = vectorizer.fit_transform(df_train[feature].astype('U'))
-            # vectorize test set
-            X_test = vectorizer.transform(df_test[feature].astype('U'))
-            # select target
-            target = y_test[score]
-            # instantiate model
-            model = MultinomialNB()
-            # fit model
-            model.fit(X_train, y_train[score])
-            # predict with train and test sets and store predictions in new col
-            df_train[f"{feature}_{score}_nb"] = model.predict(X_train)
-            df_test[f"{feature}_{score}_nb"] = model.predict(X_test)
-            # evaluate model and append results in dictionary
-            result_scores[f'{feature}'] = model.score(X_test, target)
-        # append results to scores dictionary
-        scores_dict[f'{score}'] = result_scores
-    return df_train, df_test, scores_dict
+
+def extract_NB_predictions(X, y, targets):
+    for target in tqdm(targets):
+        vectorizer = ColumnTransformer([
+            ('vectorizer' ,TfidfVectorizer(), 'review')
+        ], remainder='drop')
+
+        pipe = make_pipeline(
+            (vectorizer),
+            (MultinomialNB())
+        )
+        pipe.fit(X, y[target])
+        feature_name = f'{target}_nb'
+        export_joblib(pipe, feature_name)
+        X[feature_name] = pipe.predict(X)
+    return X
 
 
 def get_linear_regression_cols(X_train, X_test, y_train):
