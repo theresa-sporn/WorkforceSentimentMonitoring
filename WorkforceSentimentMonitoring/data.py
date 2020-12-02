@@ -114,7 +114,7 @@ def drop_wrong_language(df, column, language = 'en'):
     else:
         print('Process aborted')
         return df
-      
+
 def encode_target(y):
     encoding = {1 : 0, 2 : 0, 3 : 1, 4 : 2, 5 : 2}
     for col in y.columns:
@@ -147,12 +147,4 @@ def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
     print('Done!')
 
     return X_train, X_test, y_train, y_test
-# are you working?
 
-if __name__ == "__main__":
-
-<<<<<<< HEAD
-=======
-
->>>>>>> edee0a4b73f759d5a974dac07813f8c35cc9a067
-    X_train, X_test, y_train, y_test = get_prepaired_data()
