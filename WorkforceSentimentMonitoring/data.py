@@ -61,7 +61,7 @@ def merge(submission, train, test):
 
     # create a review column containing all text information
     text_columns = ["summary", "positives", "negatives", "advice_to_mgmt"]
-    df["review"] = df[text_columns].fillna('').sum(axis=1)
+    df["review"] = df[text_columns].fillna('').agg(' '.join, axis=1)
 
     # drop missing values
     categories = [
