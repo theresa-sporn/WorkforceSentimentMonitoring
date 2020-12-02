@@ -1,3 +1,4 @@
+WorkforceSentimentMonitoring/.DS_Store
 .gitignore
 MANIFEST.in
 Makefile
@@ -20,6 +21,9 @@ WorkforceSentimentMonitoring.egg-info/SOURCES.txt
 WorkforceSentimentMonitoring.egg-info/dependency_links.txt
 WorkforceSentimentMonitoring.egg-info/not-zip-safe
 WorkforceSentimentMonitoring.egg-info/top_level.txt
+scripts/WorkforceSentimentMonitoring-run
+test_data/__init__.py
+test_data/backup_test_data.py
 notebooks/.keep
 notebooks/lda.html
 scripts/WorkforceSentimentMonitoring-run

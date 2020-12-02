@@ -18,7 +18,7 @@ class Preprocessor(BaseEstimator, TransformerMixin):
         self.kwargs = kwargs
 
         self.to_lower = self.kwargs.get('to_lower', True)
-        self.rm_stopwords = self.kwargs.get('rm_stopwords', False)
+        self.rm_stopwords = self.kwargs.get('rm_stopwords', True)
         self.words_only = self.kwargs.get('words_only', True)
 
     def fit(self, X, y=None):

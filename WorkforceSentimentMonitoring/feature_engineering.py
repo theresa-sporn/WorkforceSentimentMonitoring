@@ -69,7 +69,7 @@ def extract_NB_predictions(X, y, targets):
 def get_linear_regression_cols(X_train, X_test, y_train):
     """linear regression with just the predictions for each model"""
     # iterate over the targets and instantiate, fit one model for each target
-    for col in tqdm(score_cols):
+    for col in tqdm(SCORE_COLS):
         # instantiate model
         model = LinearRegression()
         # fit model with train set
@@ -106,7 +106,7 @@ def train_logReg(X_train, y_train, X_test, y_test, score_cols=SCORE_COLS):
     """Trains the a Logistic Regression model for every target class and returns
     it with a dictionary containing the scores of the validation with the test set"""
     prediction_scores_dict = {}
-    for target in tqdm(score_cols):
+    for target in tqdm(SCORE_COLS):
         model = LogisticRegression(max_iter=1000)
         model.fit(X_train, y_train[target])
         prediction_scores[target] = model.score(X_test, y_test[target])
