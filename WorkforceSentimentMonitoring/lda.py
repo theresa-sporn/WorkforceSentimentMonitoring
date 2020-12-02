@@ -1,3 +1,4 @@
+import gemsim
 import gensim.corpora as corpora
 from gensim.utils import lemmatize, simple_preprocess
 from gensim.models import CoherenceModel
