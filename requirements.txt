@@ -10,4 +10,13 @@ yapf
 python-gitlab
 twine
 textblob
+joblib
+gunicorn
+streamlit
 langdetect
+numpy
+plotly
+nltk
+tqdm
+matplotlib
+plotly
