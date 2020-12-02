@@ -19,9 +19,13 @@ def extract_positive(df):
 
 id2word = corpora.Dictionary(negatives_tokenized)
 dictionary = id2word
+dictionary = dictionary.filter_extremes(no_above=0.80)
+
 texts = negatives_tokenized
 corpus = [id2word.doc2bow(text) for text in texts]
+
 ldamallet = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=2, id2word=id2word, iterations=100)
+
 coherence_model_ldamallet = CoherenceModel(model=ldamallet, texts=texts, dictionary=id2word, coherence='c_v')
 coherence_ldamallet = coherence_model_ldamallet.get_coherence()
 
