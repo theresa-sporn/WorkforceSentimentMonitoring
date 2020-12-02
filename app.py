@@ -111,6 +111,12 @@ if df.shape[1] == len(categories):
   neg_counts = df[df==0].count()
   neutral_counts = df[df==1].count()
 
+  ## here prediction of pos:1 , neg:0
+
+  # neg_counts = df[df==0].count()
+  # pos_counts = df[df==1].count()
+  # neutral_counts = 0
+
   sentiment = ['positive',
                'negative',
                'neutral'
