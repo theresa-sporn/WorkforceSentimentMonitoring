@@ -24,7 +24,7 @@ def remove_stopwords(text):
 	"""remove stopwords + tokenize"""
 	stop_words = set(stopwords.words('english'))
 	tokenized = word_tokenize(text)
-	without_stopwords = [word for word in tokenized if not word in stop_words]
+	without_stopwords = " ".join([word for word in tokenized if not word in stop_words])
 	return without_stopwords
 
 def lemmatize(text):
@@ -39,6 +39,7 @@ def preprocessing(text, to_lower, words_only, rm_stopwords):
 	if type(text) is not str:
 		return text
 
+	text = text.strip()
 	if to_lower:
 		text = text.lower()
 	if words_only:
