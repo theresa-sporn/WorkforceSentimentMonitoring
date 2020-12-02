@@ -9,15 +9,15 @@ import matplotlib.pyplot as plt
 from textblob import TextBlob
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier, VotingClassifier
-from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
 from sklearn.metrics import classification_report
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.naive_bayes import MultinomialNB
 
-from WorkforceSentimentMonitoring.data import get_data, merge, holdout
+from WorkforceSentimentMonitoring.data import get_data, merge, holdout, get_prepaired_data
 from WorkforceSentimentMonitoring.preprocessing import preprocessing
+from WorkforceSentimentMonitoring.encoders import Preprocessor, CustomMinMaxScaler, FeatureEngineer
 from WorkforceSentimentMonitoring.utils import simple_time_tracker
 from test_data.backup_test_data import get_test_data
 
