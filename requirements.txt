@@ -173,7 +173,6 @@ urllib3
 wcwidth
 webencodings
 widgetsnbextension
-WorkforceSentimentMonitoring
 wrapt
 xgboost
 yarl
