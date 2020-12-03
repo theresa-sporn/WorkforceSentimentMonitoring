@@ -22,16 +22,16 @@ import os
 
 
 
-page_bg_img = '''
-<style>
-body {
-background-image: url("https://lh3.googleusercontent.com/proxy/sZTTe5weHc6DQ4yQHEhFMhtfaiZsYnnM38wB1JTbeYMEvaVg_BZtZrPtBo5GrA4itBkWxmUftHeKsYDCxTs1Brt2PwGX1uo8Uw4KBklORULlu942cCxP1G0LMlqEBXuudzXJwr5wvYc");
-background-size: cover;
-}
-</style>
-'''
+# page_bg_img = '''
+# <style>
+# body {
+# background-image: url("https://lh3.googleusercontent.com/proxy/sZTTe5weHc6DQ4yQHEhFMhtfaiZsYnnM38wB1JTbeYMEvaVg_BZtZrPtBo5GrA4itBkWxmUftHeKsYDCxTs1Brt2PwGX1uo8Uw4KBklORULlu942cCxP1G0LMlqEBXuudzXJwr5wvYc");
+# background-size: cover;
+# }
+# </style>
+# '''
 
-st.markdown(page_bg_img, unsafe_allow_html=True)
+# st.markdown(page_bg_img, unsafe_allow_html=True)
 
 
 
@@ -257,13 +257,13 @@ if df.shape[1] == len(categories):
   my_expander_3 = st.beta_expander('Topic-specific Sentiment')
   if select == categories_new[0]:
     option = my_expander_3.selectbox('Select a line to filter', ['Positive Reviews', 'Negative Reviews'], key=100)
-    if option == 'Positive reviews':
+    if option == 'Positive Reviews':
       # my_expander_3.markdown(f'## **Positive sentiment analysis**')
       color = 'green'
       fig = px.bar(df_bar, x='review topics', y='positive [%]', title="Positive Reviews")
       fig.update_traces(marker_color=color)
       my_expander_3.plotly_chart(fig)
-    elif option == 'Negative reviews':
+    elif option == 'Negative Reviews':
       # my_expander_3.markdown(f'## **Negative sentiment analysis**')
       color = 'red'
       fig = px.bar(df_bar, x='review topics', y='negative [%]', title="Negative Reviews")
@@ -313,7 +313,7 @@ if df.shape[1] == len(categories):
           selection = ['Positive topics', 'Negative topics']
           option_2 = my_expander_4.selectbox('Select a line to filter', selection, key=101)
           if option_2 == 'Negative topics':
-              path = os.path.join(os.getcwd(), './notebooks/lda.html')
+              path = os.path.join(os.getcwd(), './notebooks/pyLDAvis2.html')
               HtmlFile = open(path, 'r', encoding='utf-8')
               source_code = HtmlFile.read()
               print(source_code)
