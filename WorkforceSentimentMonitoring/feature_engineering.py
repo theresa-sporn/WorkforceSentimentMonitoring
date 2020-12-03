@@ -43,33 +43,27 @@ def get_subjectivity_polarity_columns(df):
         df[f"polarity_{feature}"] = df[feature].apply(getPolarity)
     return df
 
+def export_joblib(estimator, name):
+    dirname = os.path.abspath('')
+    filename = os.path.join(dirname, f'../joblib_files/{name}.joblib')
+    joblib.dump(estimator, filename)
 
-def add_multinomial_nb_prediction_feature(df_train, df_test, y_train, y_test):
-    """vectorize and predict with Naive Bayes"""
-    scores_dict= {}
-    for score in y_test.columns:
-        result_scores = {}
-        for feature in df_train.select_dtypes('object').columns:
-            # instantiate vectorizer
-            vectorizer = TfidfVectorizer(analyzer='char', ngram_range=(1,7))
-            # vectorize train set
-            X_train = vectorizer.fit_transform(df_train[feature].astype('U'))
-            # vectorize test set
-            X_test = vectorizer.transform(df_test[feature].astype('U'))
-            # select target
-            target = y_test[score]
-            # instantiate model
-            model = MultinomialNB()
-            # fit model
-            model.fit(X_train, y_train[score])
-            # predict with train and test sets and store predictions in new col
-            df_train[f"{feature}_{score}_nb"] = model.predict(X_train)
-            df_test[f"{feature}_{score}_nb"] = model.predict(X_test)
-            # evaluate model and append results in dictionary
-            result_scores[f'{feature}'] = model.score(X_test, target)
-        # append results to scores dictionary
-        scores_dict[f'{score}'] = result_scores
-    return df_train, df_test, scores_dict
+
+def extract_NB_predictions(X, y, targets):
+    for target in tqdm(targets):
+        vectorizer = ColumnTransformer([
+            ('vectorizer' ,TfidfVectorizer(), 'review')
+        ], remainder='drop')
+
+        pipe = make_pipeline(
+            (vectorizer),
+            (MultinomialNB())
+        )
+        pipe.fit(X, y[target])
+        feature_name = f'{target}_nb'
+        export_joblib(pipe, feature_name)
+        X[feature_name] = pipe.predict(X)
+    return X
 
 
 def get_linear_regression_cols(X_train, X_test, y_train):
@@ -118,3 +112,76 @@ def train_logReg(X_train, y_train, X_test, y_test, score_cols=SCORE_COLS):
         prediction_scores[target] = model.score(X_test, y_test[target])
 
     return model, prediction_scores_dict
+
+
+def create_wordcount_vector(corpus):
+    """Vectorize corpus. Corpus is a pd.Series with texts"""
+    vectorizer = CountVectorizer(stop_words='english', strip_accents='ascii')
+    X_vectorized = vectorizer.fit_transform(corpus)
+    X_vectorized = X_vectorized.toarray()
+    columns = vectorizer.get_feature_names()
+    X_vectorized = pd.DataFrame(X_vectorized, columns=columns)
+    return X_vectorized
+
+
+def create_emotion_dictionary(lexicon):
+    """Create dict with word : emo_array pairs"""
+    # create pivot table to better extract the word : array pairs
+    table = pd.pivot_table(lexicon, values='emotion-intensity-score',
+                           index='word', columns='emotion', fill_value=0)
+    # create dictionary
+    emo_scores_dict = {word : value for word , value in zip(table.index, table.values)}
+    return emo_scores_dict
+
+
+def simplify_emotion_dict_and_wordcount(emo_scores_dict, word_count_vec):
+    """Deletes the emotion keys in the dictionary that aren't present in the dataset"""
+    # Create set intersection with words appearing in both the dic and the vector
+    columns_intersection = set(word_count_vec.columns).intersection(set(emo_scores_dict.keys()))
+    # Drop unnecessary word columns in word_count_vec
+    word_count_vec = word_count_vec[columns_intersection]
+    # Drop innecessary entries in emo_scores_dict
+    keys_to_drop = set(emo_scores_dict.keys()).difference(columns_intersection)
+    for key in keys_to_drop:
+        emo_scores_dict.pop(key)
+    return emo_scores_dict, word_count_vec
+
+
+def get_emotion_score(X, lexicon):
+    """Extract emotion scores"""
+
+    X_vectorized = create_wordcount_vector(X['review'])
+    emo_scores_dict = create_emotion_dictionary(lexicon)
+    emo_scores_dict, X_vectorized = simplify_emotion_dict_and_wordcount(emo_scores_dict,
+                                                                        X_vectorized)
+    X['length'] = X.review.str.split(' ').apply(len)
+    emotions = lexicon.emotion.unique()
+
+    # Create new empty columns for emotion_scores
+    for emo in table.columns:
+        X[f'{emo}_score'] = np.nan
+    # iterate through every row
+    for i in tqdm(range(len(X))):
+        # select columns containing words in the word count vector
+        col_selector = X_vectorized.loc[i] > 0
+        review = X_vectorized.loc[i, col_selector]
+        # create an empty np.array with 8 spaces to add the results to
+        emo_score = np.zeros(8)
+        # iterate over the words contained in the review
+        for j in range(len(review)):
+            # select the word (string)
+            word = review.index[j]
+            # select the count (int)
+            word_count = review[j]
+            # compute emo_score by multiplying the array from the dict with the
+            # word count
+            emo_array = emo_scores_dict[word] * word_count
+            # add emo_array to emo_score array
+            emo_score += emo_array
+        # compute the average emo_array for the entire review
+        emo_score_avg = emo_score / X.length[i]
+        # iterate over the emotion columns to append the corresponding value
+        for idx, emo in enumerate(emotions):
+            X[f'{emo}_score'][i] = emo_score_avg[idx]
+
+    return X
