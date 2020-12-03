@@ -17,11 +17,11 @@ SCORE_COLS = [
 ]
 
 
-def get_data():
+def get_data(path_to_data):
 
-    path = os.path.split(os.path.abspath(__file__))[0]
-    path_to_data = os.path.join(path, "../raw_data")
-
+   # path = os.path.split(os.path.abspath(__file__))[0]
+   # path_to_data = os.path.join(path, "raw_data")
+   # print(os.path.join(path_to_data, "sample_submission.csv"))
     submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
     train = pd.read_csv(os.path.join(path_to_data, "train.csv"))
     test = pd.read_csv(os.path.join(path_to_data, "test.csv"))
@@ -61,7 +61,7 @@ def merge(submission, train, test):
 
     # create a review column containing all text information
     text_columns = ["summary", "positives", "negatives", "advice_to_mgmt"]
-    df["review"] = df[text_columns].fillna('').sum(axis=1)
+    df["review"] = df[text_columns].fillna('').agg(' '.join, axis=1)
 
     # drop missing values
     categories = [
@@ -154,9 +154,4 @@ def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
     print('Done!')
 
     return X_train, X_test, y_train, y_test
-# are you working?
 
-if __name__ == "__main__":
-
-
-    X_train, X_test, y_train, y_test = get_prepaired_data()
