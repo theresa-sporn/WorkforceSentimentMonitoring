@@ -17,11 +17,11 @@ SCORE_COLS = [
 ]
 
 
-def get_data():
+def get_data(path_to_data):
 
-    path = os.path.split(os.path.abspath(__file__))[0]
-    path_to_data = os.path.join(path, "../raw_data")
-
+   # path = os.path.split(os.path.abspath(__file__))[0]
+   # path_to_data = os.path.join(path, "raw_data")
+   # print(os.path.join(path_to_data, "sample_submission.csv"))
     submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
     train = pd.read_csv(os.path.join(path_to_data, "train.csv"))
     test = pd.read_csv(os.path.join(path_to_data, "test.csv"))
@@ -154,9 +154,8 @@ def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
     print('Done!')
 
     return X_train, X_test, y_train, y_test
-# are you working?
 
-if __name__ == "__main__":
-
-
-    X_train, X_test, y_train, y_test = get_prepaired_data()
+def get_lexicon():
+    '''retrieves lexicon dictionary and loads it into a DataFrame'''
+    lexicon = pd.read_csv('../lexicon/EmotionIntensityLexicon.txt',sep='\t')
+    return lexicon
