@@ -157,5 +157,10 @@ def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
 
 def get_lexicon():
     '''retrieves lexicon dictionary and loads it into a DataFrame'''
-    lexicon = pd.read_csv('../lexicon/EmotionIntensityLexicon.txt',sep='\t')
+    path = os.path.split(os.path.abspath(__file__))[0]
+    filename = os.path.join(path, '../lexicon/EmotionIntensityLexicon.txt')
+    lexicon = pd.read_csv('filename',sep='\t')
     return lexicon
+
+if __name__ == "__main__":
+    pass
