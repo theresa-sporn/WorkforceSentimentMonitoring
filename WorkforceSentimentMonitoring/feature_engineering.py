@@ -7,6 +7,8 @@ from sklearn.linear_model import LogisticRegression, LinearRegression
 from tqdm import tqdm
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+import os
+import joblib
 
 pd.options.mode.chained_assignment = None
 
@@ -200,3 +202,43 @@ def get_emotion_score(X, lexicon):
             X[f'{emo}_score'][i] = emo_score[idx]
 
     return X
+
+def get_mnb_features(X):
+
+    path = os.path.split(os.path.abspath(__file__))[0]
+    model_path = os.path.join(path, "../joblib_files")
+
+    # list of tuple(col_names, path_to_model)
+    list_col_model = [('work-balance_nb', 'work-balance_nb.joblib'),
+                      ('culture-values_nb', 'culture-values_nb.joblib'),
+                      ('career-opportunities_nb', 'career-opportunities_nb.joblib'),
+                      ('comp-benefits_nb', 'comp-benefits_nb.joblib'),
+                      ('senior-mgmt_nb', 'senior-mgmt_nb.joblib'),
+                      ('overall_nb', 'overall_nb.joblib')]
+    # iterate the tuple
+    for col_model in list_col_model:
+        col = col_model[0]
+        model_name = col_model[1]
+        model = joblib.load(os.path.join(model_path, model_name))
+        X[col] = model.predict(X)
+    return X
+
+def get_clf_scores(X):
+
+    path = os.path.split(os.path.abspath(__file__))[0]
+    model_path = os.path.join(path, "../joblib_files")
+
+    # list of tuple(col_names, path_to_model)
+    list_col_model = [('work-life-balance', 'work-balance_clf.joblib'),
+                      ('culture-values', 'culture-values_clf.joblib'),
+                      ('career-opportunities', 'career-opportunities_clf.joblib'),
+                      ('company-benefits', 'comp-benefits_clf.joblib'),
+                      ('senior-management', 'senior-mgmt_clf.joblib'),
+                      ('overall', 'overall_clf.joblib')]
+    # iterate the tuple
+    for col_model in list_col_model:
+        col = col_model[0]
+        model_name = col_model[1]
+        model = joblib.load(os.path.join(model_path, model_name))
+        X[col] = model.predict(X.iloc[:,:17])
+    return X[X.columns[-6:]]
