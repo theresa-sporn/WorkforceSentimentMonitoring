@@ -7,14 +7,18 @@ import contractions
 
 def lowercase(text):
 	"""lowercase"""
-	lowercased = text.lower()
-	return lowercased
+	text = [x.lower() for x in text]
+	return text
 
 def remove_punctuation(text):
-	"""remove punctuation"""
-	for punctuation in string.punctuation:
-		text = text.replace(punctuation, ' ')
-	return text
+    results = []
+    for i in text:
+        #print(i)
+        for punctuation in string.punctuation:
+            if punctuation in i:
+                i = i.replace(punctuation, ' ')
+        results.append(i)
+    return results
 
 def remove_numbers(text):
 	"""remove numbers"""
@@ -34,7 +38,12 @@ def lemmatize(text):
 	lemmatizer = WordNetLemmatizer() # Initiate lemmatizer
 	lemmatized = [lemmatizer.lemmatize(word) for word in text.split(" ")] # Lemmatize
 	lemmatized_string = " ".join(lemmatized)
-	return lemmatized_string
+	text = lemmatized_string
+	return text
+
+def tokenize(df):
+    tokenized_text = word_tokenize(str(df))
+    return tokenized_text
 
 def tokenize(df):
     tokenized_text = word_tokenize(str(df))
