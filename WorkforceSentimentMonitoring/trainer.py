@@ -1,12 +1,9 @@
 import warnings
-import time
-from tqdm import tqdm
 import joblib
 import os
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from textblob import TextBlob
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression, LogisticRegression
@@ -17,18 +14,18 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.base import BaseEstimator, TransformerMixin
 
-from WorkforceSentimentMonitoring.data import get_data, merge, holdout, get_prepaired_data
+from WorkforceSentimentMonitoring.data import get_data, merge, holdout, get_prepaired_data, drop_wrong_language
+from WorkforceSentimentMonitoring.feature_engineering import get_mnb_features, get_clf_scores
 from WorkforceSentimentMonitoring.preprocessing import preprocessing
 from WorkforceSentimentMonitoring.encoders import Preprocessor, CustomMinMaxScaler, FeatureEngineer
-from WorkforceSentimentMonitoring.utils import simple_time_tracker
 from test_data.backup_test_data import get_test_data
 from io import BytesIO
 import requests
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-FEATURE_COLS = ['positives', 'negatives', 'review']
-SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
+# FEATURE_COLS = ['positives', 'negatives', 'review']
+# SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
 
 class MultiNBFeaturesExtractor(BaseEstimator, TransformerMixin):
@@ -42,52 +39,50 @@ class MultiNBFeaturesExtractor(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y=None):
-        return self.get_mnb_features(X)
-
-    def get_mnb_features(self, X, y=None):
-
-        path = os.path.split(os.path.abspath(__file__))[0]
-        model_path = os.path.join(path, "../joblib_files")
-
-        # list of tuple(col_names, path_to_model)
-        list_col_model = [('work-balance_nb', 'work-balance_nb.joblib'),
-                          ('culture-values_nb', 'culture-values_nb.joblib'),
-                          ('career-opportunities_nb', 'career-opportunities_nb.joblib'),
-                          ('comp-benefits_nb', 'comp-benefits_nb.joblib'),
-                          ('senior-mgmt_nb', 'senior-mgmt_nb.joblib'),
-                          ('overall_nb', 'overall_nb.joblib')]
-        # iterate the tuple
-        for col_model in list_col_model:
-            col = col_model[0]
-            model_name = col_model[1]
-            model = joblib.load(os.path.join(model_path, model_name))
-            X[col] = model.predict(X)
-        return X
+        return get_mnb_features(X)
 
 
+class Classifier(BaseEstimator, TransformerMixin):
 
-def get_mnb_features(df):
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+        self.X = self.kwargs.get('drop_wrong_language', True)
 
-    path = os.path.split(os.path.abspath(__file__))[0]
-    model_path = os.path.join(path, "../joblib_files")
-    #model_path = "https://github.com/theresa-sporn/WorkforceSentimentMonitoring/blob/master/joblib_files"
 
-    model_link = "https://github.com/theresa-sporn/WorkforceSentimentMonitoring/blob/master/joblib_files"
-    model_file = BytesIO(requests.get(model_link).content)
-    # list of tuple(col_names, path_to_model)
-    list_col_model = [('work-balance_nb', 'work-balance_nb.joblib'),
-                      ('culture-values_nb', 'culture-values_nb.joblib'),
-                      ('career-opportunities_nb', 'career-opportunities_nb.joblib'),
-                      ('comp-benefits_nb', 'comp-benefits_nb.joblib'),
-                      ('senior-mgmt_nb', 'senior-mgmt_nb.joblib'),
-                      ('overall_nb', 'overall_nb.joblib')]
-    # iterate the tuple
-    for col_model in list_col_model:
-        col = col_model[0]
-        model_name = col_model[1]
-        model = joblib.load(os.path.join(model_file, model_name))
-        df[col] = model.predict(df)
-    return df
+    def fit(self, X, y=None):
+        assert isinstance(X, pd.DataFrame)
+        return self
+
+    def transform(self, X, y=None):
+        self.X = drop_wrong_language(X, 'review')
+        return get_clf_scores(X=self.X.drop(columns='review'))
+
+# def get_mnb_features(df):
+
+#     path = os.path.split(os.path.abspath(__file__))[0]
+#     model_path = os.path.join(path, "../joblib_files")
+#     #model_path = "https://github.com/theresa-sporn/WorkforceSentimentMonitoring/blob/master/joblib_files"
+
+#     model_link = "https://github.com/theresa-sporn/WorkforceSentimentMonitoring/blob/master/joblib_files"
+#     model_file = BytesIO(requests.get(model_link).content)
+#     # list of tuple(col_names, path_to_model)
+#     list_col_model = [('work-balance_nb', 'work-balance_nb.joblib'),
+#                       ('culture-values_nb', 'culture-values_nb.joblib'),
+#                       ('career-opportunities_nb', 'career-opportunities_nb.joblib'),
+#                       ('comp-benefits_nb', 'comp-benefits_nb.joblib'),
+#                       ('senior-mgmt_nb', 'senior-mgmt_nb.joblib'),
+#                       ('overall_nb', 'overall_nb.joblib')]
+#     # iterate the tuple
+#     for col_model in list_col_model:
+#         col = col_model[0]
+#         model_name = col_model[1]
+#         model = joblib.load(os.path.join(model_file, model_name))
+#         df[col] = model.predict(df)
+#     return df
+
+
+
+
 
 # class Trainer(object):
 #     SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
