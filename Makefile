@@ -65,4 +65,4 @@ pypi:
 # ----------------------------------
 
 run_streamlit:
-  @streamlit run app.py
+	@streamlit run app.py
