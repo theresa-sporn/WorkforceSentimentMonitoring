@@ -232,6 +232,7 @@ if df.shape[1] == len(categories):
   #df_bar.rename(columns = {'index':'review topics','positive':'positive [%]', 'negative':'negative [%]', 'neutral':'neutral [%]'}, inplace=True)
   df_bar.rename(columns = {'index':'review topics','positive':'positive [%]', 'negative':'negative [%]'}, inplace=True)
   df_bar = df_bar.drop(0)
+  st.write(df_bar)
 
   components.html(space, height=50, width=1200)
 
@@ -255,7 +256,7 @@ if df.shape[1] == len(categories):
 
   my_expander_3 = st.beta_expander('Topic-specific Sentiment')
   if select == categories_new[0]:
-    option = my_expander_3.selectbox('Select a line to filter', ['Positive reviews', 'Negative reviews'], key=100)
+    option = my_expander_3.selectbox('Select a line to filter', ['Positive Reviews', 'Negative Reviews'], key=100)
     if option == 'Positive reviews':
       # my_expander_3.markdown(f'## **Positive sentiment analysis**')
       color = 'green'
