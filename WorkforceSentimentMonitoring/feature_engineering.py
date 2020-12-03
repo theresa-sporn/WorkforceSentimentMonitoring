@@ -1,5 +1,6 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 import pandas as pd
+import numpy as np
 from textblob import TextBlob
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression, LinearRegression
@@ -149,6 +150,9 @@ def simplify_emotion_dict_and_wordcount(emo_scores_dict, word_count_vec):
 
 def get_emotion_score(X, lexicon):
     """Extract emotion scores"""
+    # create pivot table to better extract the word : array pairs
+    table = pd.pivot_table(lexicon, values='emotion-intensity-score',
+                           index='word', columns='emotion', fill_value=0)
 
     X_vectorized = create_wordcount_vector(X['review'])
     emo_scores_dict = create_emotion_dictionary(lexicon)
