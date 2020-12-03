@@ -113,7 +113,6 @@ pathspec
 pexpect
 pickleshare
 Pillow
-pip
 pluggy
 prometheus-client
 prompt-toolkit
