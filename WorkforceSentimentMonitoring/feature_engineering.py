@@ -109,6 +109,6 @@ def train_logReg(X_train, y_train, X_test, y_test, score_cols=SCORE_COLS):
     for target in tqdm(SCORE_COLS):
         model = LogisticRegression(max_iter=1000)
         model.fit(X_train, y_train[target])
-        prediction_scores[target] = model.score(X_test, y_test[target])
+        prediction_scores_dict[target] = model.score(X_test, y_test[target])
 
     return model, prediction_scores_dict
