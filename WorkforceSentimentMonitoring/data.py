@@ -161,9 +161,6 @@ def get_lexicon():
     filename = os.path.join(path, '../lexicon/EmotionIntensityLexicon.txt')
     lexicon = pd.read_csv('filename',sep='\t')
     return lexicon
-<<<<<<< HEAD
 
 if __name__ == "__main__":
     pass
-=======
->>>>>>> f21a92a74db61e136a286bd5084e4f44d38d5d1a
