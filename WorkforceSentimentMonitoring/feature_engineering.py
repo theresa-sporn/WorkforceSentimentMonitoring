@@ -1,10 +1,13 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
+import numpy as np
 from textblob import TextBlob
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from tqdm import tqdm
 from sklearn.naive_bayes import MultinomialNB
+
+pd.options.mode.chained_assignment = None
 
 
 FEATURE_COLS = ["summary", "positives", "negatives", "advice_to_mgmt", "review"]
@@ -124,6 +127,16 @@ def create_wordcount_vector(corpus):
     return X_vectorized
 
 
+def create_tfidf_vector(corpus):
+    """Vectorize corpus. Corpus is a pd.Series with texts"""
+    vectorizer = TfidfVectorizer(strip_accents='ascii')
+    X_vectorized = vectorizer.fit_transform(corpus)
+    X_vectorized = X_vectorized.toarray()
+    columns = vectorizer.get_feature_names()
+    X_vectorized = pd.DataFrame(X_vectorized, columns=columns)
+    return X_vectorized
+
+
 def create_emotion_dictionary(lexicon):
     """Create dict with word : emo_array pairs"""
     # create pivot table to better extract the word : array pairs
@@ -150,7 +163,7 @@ def simplify_emotion_dict_and_wordcount(emo_scores_dict, word_count_vec):
 def get_emotion_score(X, lexicon):
     """Extract emotion scores"""
 
-    X_vectorized = create_wordcount_vector(X['review'])
+    X_vectorized = create_tfidf_vector(X['review'])
     emo_scores_dict = create_emotion_dictionary(lexicon)
     emo_scores_dict, X_vectorized = simplify_emotion_dict_and_wordcount(emo_scores_dict,
                                                                         X_vectorized)
@@ -158,7 +171,7 @@ def get_emotion_score(X, lexicon):
     emotions = lexicon.emotion.unique()
 
     # Create new empty columns for emotion_scores
-    for emo in table.columns:
+    for emo in emotions:
         X[f'{emo}_score'] = np.nan
     # iterate through every row
     for i in tqdm(range(len(X))):
@@ -178,10 +191,8 @@ def get_emotion_score(X, lexicon):
             emo_array = emo_scores_dict[word] * word_count
             # add emo_array to emo_score array
             emo_score += emo_array
-        # compute the average emo_array for the entire review
-        emo_score_avg = emo_score / X.length[i]
         # iterate over the emotion columns to append the corresponding value
         for idx, emo in enumerate(emotions):
-            X[f'{emo}_score'][i] = emo_score_avg[idx]
+            X[f'{emo}_score'][i] = emo_score[idx]
 
     return X
