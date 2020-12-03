@@ -232,7 +232,7 @@ if df.shape[1] == len(categories):
   #df_bar.rename(columns = {'index':'review topics','positive':'positive [%]', 'negative':'negative [%]', 'neutral':'neutral [%]'}, inplace=True)
   df_bar.rename(columns = {'index':'review topics','positive':'positive [%]', 'negative':'negative [%]'}, inplace=True)
   df_bar = df_bar.drop(0)
-  st.write(df_bar)
+  #st.write(df_bar)
 
   components.html(space, height=50, width=1200)
 
