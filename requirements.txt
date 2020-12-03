@@ -145,7 +145,6 @@ scikit-learn
 scipy
 seaborn
 Send2Trash
-setuptools
 six
 sklearn
 smart-open
