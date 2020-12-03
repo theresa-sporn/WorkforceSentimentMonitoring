@@ -20,3 +20,4 @@ nltk
 tqdm
 matplotlib
 plotly
+contractions
