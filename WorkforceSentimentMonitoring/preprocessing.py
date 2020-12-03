@@ -3,17 +3,22 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import pandas as pd
+import contractions
 
 def lowercase(text):
 	"""lowercase"""
-	lowercased = text.lower()
-	return lowercased
+	text = [x.lower() for x in text]
+	return text
 
 def remove_punctuation(text):
-	"""remove punctuation"""
-	for punctuation in string.punctuation:
-		text = text.replace(punctuation, ' ')
-	return text
+    results = []
+    for i in text:
+        #print(i)
+        for punctuation in string.punctuation:
+            if punctuation in i:
+                i = i.replace(punctuation, ' ')
+        results.append(i)
+    return results
 
 def remove_numbers(text):
 	"""remove numbers"""
@@ -33,17 +38,28 @@ def lemmatize(text):
 	lemmatizer = WordNetLemmatizer() # Initiate lemmatizer
 	lemmatized = [lemmatizer.lemmatize(word) for word in text.split(" ")] # Lemmatize
 	lemmatized_string = " ".join(lemmatized)
-	return lemmatized_string
+	text = lemmatized_string
+	return text
 
 def tokenize(df):
     tokenized_text = word_tokenize(str(df))
     return tokenized_text
+
+def tokenize(df):
+    tokenized_text = word_tokenize(str(df))
+    return tokenized_text
+
+def expand_contractions(text):
+	"""Fix word contractions like <I'm> into <I am>."""
+	return contractions.fix(text)
+
 
 def preprocessing(text, to_lower, words_only, rm_stopwords):
 
 	if type(text) is not str:
 		return text
 
+	text = text.strip()
 	if to_lower:
 		text = text.lower()
 	if words_only:
@@ -52,6 +68,7 @@ def preprocessing(text, to_lower, words_only, rm_stopwords):
 	if rm_stopwords:
 		text = remove_stopwords(text)
 
+	text = expand_contractions(text)
 	text = lemmatize(text)
 	return text
 
