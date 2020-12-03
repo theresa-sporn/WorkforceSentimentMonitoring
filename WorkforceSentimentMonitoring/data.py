@@ -7,6 +7,8 @@ from langdetect import detect
 from WorkforceSentimentMonitoring.utils import timing, progress_bar
 import time
 
+import swifter
+
 SCORE_COLS = [
     "work-balance",
     "culture-values",
@@ -17,11 +19,10 @@ SCORE_COLS = [
 ]
 
 
-def get_data(path_to_data):
+def get_data():
 
-   # path = os.path.split(os.path.abspath(__file__))[0]
-   # path_to_data = os.path.join(path, "raw_data")
-   # print(os.path.join(path_to_data, "sample_submission.csv"))
+    path = os.path.split(os.path.abspath(__file__))[0]
+    path_to_data = os.path.join(path, "../raw_data")
     submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
     train = pd.read_csv(os.path.join(path_to_data, "train.csv"))
     test = pd.read_csv(os.path.join(path_to_data, "test.csv"))
@@ -96,7 +97,9 @@ def holdout(df, target):
 @progress_bar(expected_time=480)
 def detect_wrong_language(df, column, language='en'):
     '''returns boolean series'''
-    return df[column].apply(detect) != language
+    # reset index for swifter
+    df.reset_index(inplace=True, drop=True)
+    return df[column].swifter.allow_dask_on_strings().apply(detect) != language
 
 def drop_wrong_language(df, column, language = 'en'):
     '''drops entries written in languages other thatn the specified'''
@@ -159,7 +162,7 @@ def get_lexicon():
     '''retrieves lexicon dictionary and loads it into a DataFrame'''
     path = os.path.split(os.path.abspath(__file__))[0]
     filename = os.path.join(path, '../lexicon/EmotionIntensityLexicon.txt')
-    lexicon = pd.read_csv('filename',sep='\t')
+    lexicon = pd.read_csv(filename,sep='\t')
     return lexicon
 
 if __name__ == "__main__":
