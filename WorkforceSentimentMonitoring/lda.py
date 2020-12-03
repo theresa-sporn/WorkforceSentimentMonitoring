@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import gemsim
+>>>>>>> 5dfb4b8e7eaa74c33bd7bacb206f96903bae0e3f
 import gensim.corpora as corpora
 from gensim.utils import lemmatize, simple_preprocess
 from gensim.models import CoherenceModel
@@ -19,14 +23,28 @@ def extract_positive(df):
 
 id2word = corpora.Dictionary(negatives_tokenized)
 dictionary = id2word
+<<<<<<< HEAD
 texts = negatives_tokenized
 corpus = [id2word.doc2bow(text) for text in texts]
 ldamallet = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=2, id2word=id2word, iterations=100)
+=======
+dictionary = dictionary.filter_extremes(no_above=0.80)
+
+texts = negatives_tokenized
+corpus = [id2word.doc2bow(text) for text in texts]
+
+ldamallet = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=2, id2word=id2word, iterations=100)
+
+>>>>>>> 5dfb4b8e7eaa74c33bd7bacb206f96903bae0e3f
 coherence_model_ldamallet = CoherenceModel(model=ldamallet, texts=texts, dictionary=id2word, coherence='c_v')
 coherence_ldamallet = coherence_model_ldamallet.get_coherence()
 
 
+<<<<<<< HEAD
 def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=1):
+=======
+def compute_coherence_values(dictionary, corpus, texts, limit=8, start=2, step=1):
+>>>>>>> 5dfb4b8e7eaa74c33bd7bacb206f96903bae0e3f
     coherence_values = []
     model_list = []
     for num_topics in range(start, limit, step):
@@ -36,7 +54,11 @@ def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=1):
         coherence_values.append(coherencemodel.get_coherence())
     return model_list, coherence_values
 
+<<<<<<< HEAD
 model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=texts, start=4, limit=16, step=2)
+=======
+model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=texts, start=4, limit=8, step=2)
+>>>>>>> 5dfb4b8e7eaa74c33bd7bacb206f96903bae0e3f
 
 max_y = max(coherence_values)  # Find the maximum y value
 max_x = coherence_values.index(max(coherence_values))  # Find the x value corresponding to the maximum y value
