@@ -3,14 +3,13 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
-from WorkforceSentimentMonitoring.data import get_prepaired_data
+from WorkforceSentimentMonitoring.data import get_prepaired_data, get_lexicon
 from WorkforceSentimentMonitoring.feature_engineering import get_lengths, getSubjectivity, getPolarity, extract_NB_predictions
 from WorkforceSentimentMonitoring.preprocessing import preprocessing
 from textblob import TextBlob
 from tqdm import tqdm
 
-
-
+from WorkforceSentimentMonitoring.feature_engineering import get_emotion_score
 
 class Preprocessor(BaseEstimator, TransformerMixin):
 
@@ -65,7 +64,7 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
         self.kwargs = kwargs
         self.polarity = self.kwargs.get('polarity', True)
         self.subjectivity = self.kwargs.get('subjectivity', True)
-        self.length = self.kwargs.get('length', True)
+        self.length = self.kwargs.get('length', False)
 
     def fit(self, X, y=None):
         assert isinstance(X, pd.DataFrame)
@@ -97,12 +96,25 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
 
     def get_subjectivity_polarity_columns(self, df):
         assert isinstance(df, pd.DataFrame)
-        for feature in tqdm(self.text_columns):
+        for feature in self.text_columns:
             if self.subjectivity:
                 df[f"subjectivity_{feature}"] = df[feature].apply(self.getSubjectivity)
-            if self.length:
+            if self.polarity:
                 df[f"polarity_{feature}"] = df[feature].apply(self.getPolarity)
         return df
+
+
+class EmotionScoresExtractor(BaseEstimator, TransformerMixin):
+
+    def __init__(self):
+        self.lexicon = get_lexicon()
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        X = get_emotion_score(X, self.lexicon)
+        return X
 
 
 class PredictionFeaturesExtractor(BaseEstimator, TransformerMixin):
