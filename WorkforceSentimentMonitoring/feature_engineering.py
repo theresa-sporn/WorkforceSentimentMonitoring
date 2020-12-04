@@ -220,7 +220,7 @@ def get_mnb_features(X):
         col = col_model[0]
         model_name = col_model[1]
         model = joblib.load(os.path.join(model_path, model_name))
-        X[col] = model.predict(X)
+        X[col] = model.predict(X)#.iloc[:,:1])
     return X
 
 def get_clf_scores(X):
