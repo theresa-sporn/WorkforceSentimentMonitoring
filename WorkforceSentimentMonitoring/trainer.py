@@ -41,6 +41,7 @@ class MultiNBFeaturesExtractor(BaseEstimator, TransformerMixin):
     def transform(self, X, y=None):
         return get_mnb_features(X[self.text_columns])
 
+
 # add final predicted scores of each category
 class Classifier(BaseEstimator, TransformerMixin):
 
