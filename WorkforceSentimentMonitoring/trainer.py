@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 # FEATURE_COLS = ['positives', 'negatives', 'review']
 # SCORE_COLS = ['work-balance', 'culture-values', 'career-opportunities', 'comp-benefits', 'senior-mgmt', 'overall']
 
-
+# add multi naive bayes scores as feature columns
 class MultiNBFeaturesExtractor(BaseEstimator, TransformerMixin):
 
     def __init__(self, **kwargs):
@@ -39,9 +39,9 @@ class MultiNBFeaturesExtractor(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y=None):
-        return get_mnb_features(X)
+        return get_mnb_features(X[self.text_columns])
 
-
+# add final predicted scores of each category
 class Classifier(BaseEstimator, TransformerMixin):
 
     def __init__(self, **kwargs):
