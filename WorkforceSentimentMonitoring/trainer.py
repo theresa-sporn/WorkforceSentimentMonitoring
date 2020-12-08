@@ -39,7 +39,7 @@ class MultiNBFeaturesExtractor(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y=None):
-        X = get_mnb_features(X)
+        X = get_mnb_features(X)#[self.text_columns])
         return X
 
 
