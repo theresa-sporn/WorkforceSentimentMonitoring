@@ -20,7 +20,6 @@ SCORE_COLS = [
 
 
 def get_data():
-
     path = os.path.split(os.path.abspath(__file__))[0]
     path_to_data = os.path.join(path, "../raw_data")
     submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
@@ -31,9 +30,6 @@ def get_data():
 
 
 def merge(submission, train, test):
-
-    # get clean dataframe
-
     # merge dataframes and drop unnecessary columns
     test = pd.merge(test, submission, on=["ID"])
     frames = [train, test]
@@ -81,7 +77,6 @@ def merge(submission, train, test):
 
 
 def holdout(df, target):
-
     y = df[target]
     X = df.drop(target, axis=1)
 
@@ -92,17 +87,19 @@ def holdout(df, target):
     y_train.reset_index(drop=True, inplace=True)
     y_val.reset_index(drop=True, inplace=True)
 
-    return (X_train, X_val, y_train, y_val)
+    return X_train, X_val, y_train, y_val
 
-@progress_bar(expected_time=480)
+
+# @progress_bar(expected_time=480)
 def detect_wrong_language(df, column, language='en'):
-    '''returns boolean series'''
+    """returns boolean series"""
     # reset index for swifter
     df.reset_index(inplace=True, drop=True)
     return df[column].swifter.allow_dask_on_strings().apply(detect) != language
 
-def drop_wrong_language(df, column, language = 'en'):
-    '''drops entries written in languages other thatn the specified'''
+
+def drop_wrong_language(df, column, language='en'):
+    """drops entries written in languages other than the specified"""
     print('Identifying entries in other languages...')
 
     is_wrong = detect_wrong_language(df, column, language)
@@ -125,17 +122,21 @@ def drop_wrong_language(df, column, language = 'en'):
         print('Process aborted')
         return df
 
+
 def encode_target(y):
-    encoding = {1 : 0, 2 : 0, 3 : 0, 4 : 1, 5 : 1}
+    encoding = {1: 0, 2: 0, 3: 0, 4: 1, 5: 1}
     for col in y.columns:
         y[col] = y[col].map(encoding)
 
     return y
 
-def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
+
+def get_prepaired_data(target=None, keep_text_cols=False):
     """runs all functions above and returns X & y datasets (train & test) ready for preprocessing
        if keep_text_cols=True the returned DataFrame will keep the text columns from which the review column is created"""
     # retrieve data
+    if target is None:
+        target = SCORE_COLS
     print('Reading data...')
     submission, train, test = get_data()
     # merge data
@@ -158,12 +159,14 @@ def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
 
     return X_train, X_test, y_train, y_test
 
+
 def get_lexicon():
-    '''retrieves lexicon dictionary and loads it into a DataFrame'''
+    """retrieves lexicon dictionary and loads it into a DataFrame"""
     path = os.path.split(os.path.abspath(__file__))[0]
     filename = os.path.join(path, '../lexicon/EmotionIntensityLexicon.txt')
-    lexicon = pd.read_csv(filename,sep='\t')
+    lexicon = pd.read_csv(filename, sep='\t')
     return lexicon
+
 
 if __name__ == "__main__":
     pass
