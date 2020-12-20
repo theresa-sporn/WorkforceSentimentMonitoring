@@ -20,6 +20,10 @@ SCORE_COLS = [
 
 
 def get_data():
+<<<<<<< HEAD
+=======
+
+>>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
     path = os.path.split(os.path.abspath(__file__))[0]
     path_to_data = os.path.join(path, "../raw_data")
     submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
@@ -30,6 +34,12 @@ def get_data():
 
 
 def merge(submission, train, test):
+<<<<<<< HEAD
+=======
+
+    # get clean dataframe
+
+>>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
     # merge dataframes and drop unnecessary columns
     test = pd.merge(test, submission, on=["ID"])
     frames = [train, test]
@@ -77,6 +87,10 @@ def merge(submission, train, test):
 
 
 def holdout(df, target):
+<<<<<<< HEAD
+=======
+
+>>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
     y = df[target]
     X = df.drop(target, axis=1)
 
@@ -87,6 +101,7 @@ def holdout(df, target):
     y_train.reset_index(drop=True, inplace=True)
     y_val.reset_index(drop=True, inplace=True)
 
+<<<<<<< HEAD
     return X_train, X_val, y_train, y_val
 
 
@@ -166,7 +181,80 @@ def get_lexicon():
     filename = os.path.join(path, '../lexicon/EmotionIntensityLexicon.txt')
     lexicon = pd.read_csv(filename, sep='\t')
     return lexicon
+=======
+    return (X_train, X_val, y_train, y_val)
+>>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
 
+@progress_bar(expected_time=480)
+def detect_wrong_language(df, column, language='en'):
+    '''returns boolean series'''
+    # reset index for swifter
+    df.reset_index(inplace=True, drop=True)
+    return df[column].swifter.allow_dask_on_strings().apply(detect) != language
+
+def drop_wrong_language(df, column, language = 'en'):
+    '''drops entries written in languages other thatn the specified'''
+    print('Identifying entries in other languages...')
+
+    is_wrong = detect_wrong_language(df, column, language)
+
+    n_rows_to_drop = is_wrong.sum()
+
+    if n_rows_to_drop == 0:
+        print('No entries to drop.')
+        return df
+
+    user_confirmation = None
+    while not (user_confirmation is 'y' or user_confirmation is 'n'):
+        user_confirmation = input(f'Drop {n_rows_to_drop} entries? [y] / n\n') or 'y'
+    if user_confirmation is 'y':
+        print(f'Dropping {n_rows_to_drop} entries...')
+        df = df[~is_wrong]
+        df.reset_index(inplace=True, drop=True)
+        return df
+    else:
+        print('Process aborted')
+        return df
+
+def encode_target(y):
+    encoding = {1 : 0, 2 : 0, 3 : 0, 4 : 1, 5 : 1}
+    for col in y.columns:
+        y[col] = y[col].map(encoding)
+
+    return y
+
+def get_prepaired_data(target=SCORE_COLS, keep_text_cols=False):
+    """runs all functions above and returns X & y datasets (train & test) ready for preprocessing
+       if keep_text_cols=True the returned DataFrame will keep the text columns from which the review column is created"""
+    # retrieve data
+    print('Reading data...')
+    submission, train, test = get_data()
+    # merge data
+    print('Merging data into a single DataFrame...')
+    df = merge(submission, train, test)
+    # drop text columns if keep_text_cols = False
+    if not keep_text_cols:
+        print('Dropping initial text columns...')
+        df = df.drop(columns=["summary", "positives", "negatives", "advice_to_mgmt"])
+    # drop entries in wrong languages
+    df = drop_wrong_language(df, 'review')
+    # holdout
+    print('Splitting train and test...')
+    X_train, X_test, y_train, y_test = holdout(df, target)
+    # Encode y_train and y_train
+    print('Encoding targets...')
+    y_train = encode_target(y_train)
+    y_test = encode_target(y_test)
+    print('Done!')
+
+    return X_train, X_test, y_train, y_test
+
+def get_lexicon():
+    '''retrieves lexicon dictionary and loads it into a DataFrame'''
+    path = os.path.split(os.path.abspath(__file__))[0]
+    filename = os.path.join(path, '../lexicon/EmotionIntensityLexicon.txt')
+    lexicon = pd.read_csv(filename,sep='\t')
+    return lexicon
 
 if __name__ == "__main__":
     pass
