@@ -1,3 +1,0 @@
-WorkforceSentimentMonitoring
-test_data
-tests
