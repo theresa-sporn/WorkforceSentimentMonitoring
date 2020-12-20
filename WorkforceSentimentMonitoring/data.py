@@ -20,10 +20,7 @@ SCORE_COLS = [
 
 
 def get_data():
-<<<<<<< HEAD
-=======
 
->>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
     path = os.path.split(os.path.abspath(__file__))[0]
     path_to_data = os.path.join(path, "../raw_data")
     submission = pd.read_csv(os.path.join(path_to_data, "sample_submission.csv"))
@@ -34,12 +31,6 @@ def get_data():
 
 
 def merge(submission, train, test):
-<<<<<<< HEAD
-=======
-
-    # get clean dataframe
-
->>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
     # merge dataframes and drop unnecessary columns
     test = pd.merge(test, submission, on=["ID"])
     frames = [train, test]
@@ -87,10 +78,7 @@ def merge(submission, train, test):
 
 
 def holdout(df, target):
-<<<<<<< HEAD
-=======
 
->>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
     y = df[target]
     X = df.drop(target, axis=1)
 
@@ -101,7 +89,6 @@ def holdout(df, target):
     y_train.reset_index(drop=True, inplace=True)
     y_val.reset_index(drop=True, inplace=True)
 
-<<<<<<< HEAD
     return X_train, X_val, y_train, y_val
 
 
@@ -181,9 +168,7 @@ def get_lexicon():
     filename = os.path.join(path, '../lexicon/EmotionIntensityLexicon.txt')
     lexicon = pd.read_csv(filename, sep='\t')
     return lexicon
-=======
-    return (X_train, X_val, y_train, y_val)
->>>>>>> ef40e67d6d120ec254f2b54c7bf4186356739f88
+
 
 @progress_bar(expected_time=480)
 def detect_wrong_language(df, column, language='en'):
