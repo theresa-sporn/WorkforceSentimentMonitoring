@@ -11,4 +11,7 @@ groupama/data/base_pno.*
 .idea/
 /raw_data/
 *.csv
+*.joblib
 /joblib_files/
+*.joblib
+
