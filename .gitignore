@@ -11,8 +11,7 @@ groupama/data/base_pno.*
 .idea/
 /raw_data/
 *.csv
-<<<<<<< HEAD
 *.joblib
-=======
 /joblib_files/
->>>>>>> 64f12a83ed5daf14bcebd033240457fdca30dd31
+*.joblib
+
